@@ -663,7 +663,9 @@
 
  let calendarYear = new Date().getFullYear();
  let calendarMonth = new Date().getMonth();
- let isBannerVisible = true;
+
+ // localStorageからバナーの表示状態を読み込む（デフォルトはtrue）
+ let isBannerVisible = JSON.parse(localStorage.getItem('study_banner_visible')) !== false;
 
  function checkAndCleanExpiredWorks() {
  const today = new Date();
@@ -955,7 +957,6 @@
  const canvas = document.getElementById('sealCanvas');
  const ctx = canvas.getContext('2d');
  
- // 印刷用の解像度を2倍（1200x600）にして文字をくっきり大きくする
  canvas.width = 1200;
  canvas.height = 600;
 
@@ -1086,7 +1087,6 @@
  }
  }
 
- // 残りページ数の計算（まだ現在シールを作っていない場合は、目標の終わりから初めを引いたページ数を初めの残りページ数とする）
  const startP = worksData[fullSubject].goalStartPage > 0 ? worksData[fullSubject].goalStartPage : 0;
  const endP = worksData[fullSubject].goalEndPage > 0 ? worksData[fullSubject].goalEndPage : 0;
  const progP = worksData[fullSubject].currentProgPage > 0 ? worksData[fullSubject].currentProgPage : 0;
@@ -1173,8 +1173,8 @@
  const today = new Date();
  today.setHours(0,0,0,0);
 
- let nearestWork = null;
  let minDays = Infinity;
+ let nearestWorks = [];
 
  Object.keys(worksData).forEach(key => {
  const w = worksData[key];
@@ -1183,16 +1183,23 @@
  limit.setHours(0,0,0,0);
  const diffTime = limit - today;
  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
- if (diffDays >= 0 && diffDays < minDays) {
+ if (diffDays >= 0) {
+ if (diffDays < minDays) {
  minDays = diffDays;
- nearestWork = { name: key, days: diffDays, remaining: w.remainingPages };
+ nearestWorks = [{ name: key, remaining: w.remainingPages }];
+ } else if (diffDays === minDays) {
+ nearestWorks.push({ name: key, remaining: w.remainingPages });
+ }
  }
  }
  });
 
- if (nearestWork) {
+ if (nearestWorks.length > 0) {
  banner.style.display = 'flex';
- textEl.innerText = `「${nearestWork.name}」 期限まであと ${nearestWork.days} 日 (残り約 ${nearestWork.remaining} ページ)`;
+ const first = nearestWorks[0];
+ const extraCount = nearestWorks.length - 1;
+ const extraText = extraCount > 0 ? ` 他${extraCount}件` : '';
+ textEl.innerText = `「${first.name}」${extraText} 期限まであと ${minDays} 日 (残り約 ${first.remaining} ページ)`;
  } else {
  banner.style.display = 'none';
  }
@@ -1250,7 +1257,8 @@
  <div class="cal-day-name">金</div>
  <div class="cal-day-name" style="color:#0ea5e9;">土</div>
  `;
-     const limitMap = {};
+
+ const limitMap = {};
  Object.keys(worksData).forEach(key => {
  const w = worksData[key];
  if (w.limitDate) {
@@ -1372,6 +1380,8 @@
  if (tapLength < 300 && tapLength > 0) {
  playSound('click');
  isBannerVisible = !isBannerVisible;
+ // 非表示状態をlocalStorageに保存
+ localStorage.setItem('study_banner_visible', JSON.stringify(isBannerVisible));
  renderCountdown();
  e.preventDefault();
  }
@@ -1381,6 +1391,8 @@
  titleEl.addEventListener('dblclick', () => {
  playSound('click');
  isBannerVisible = !isBannerVisible;
+ // 非表示状態をlocalStorageに保存
+ localStorage.setItem('study_banner_visible', JSON.stringify(isBannerVisible));
  renderCountdown();
  });
  });
