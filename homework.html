@@ -1,1382 +1,1392 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>提出物シール作成</title>
-    <style>
-        :root {
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border-radius: 16px;
-        }
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>提出物シール作成</title>
+ <style>
+ :root {
+ --primary: #6366f1;
+ --primary-hover: #4f46e5;
+ --bg-color: #f8fafc;
+ --card-bg: #ffffff;
+ --text-main: #1e293b;
+ --text-muted: #64748b;
+ --border-radius: 16px;
+ }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
+ * {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+ font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+ }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 16px;
-        }
+ body {
+ background-color: var(--bg-color);
+ color: var(--text-main);
+ min-height: 100vh;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ padding: 16px;
+ }
 
-        .app-container {
-            width: 100%;
-            max-width: 480px;
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-            position: relative;
-            min-height: 700px;
-            display: flex;
-            flex-direction: column;
-        }
+ .app-container {
+ width: 100%;
+ max-width: 480px;
+ background-color: var(--card-bg);
+ border-radius: var(--border-radius);
+ box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+ overflow: hidden;
+ position: relative;
+ min-height: 700px;
+ display: flex;
+ flex-direction: column;
+ }
 
-        .header {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            position: relative;
-        }
+ .header {
+ background: linear-gradient(135deg, #6366f1, #8b5cf6);
+ color: white;
+ padding: 20px;
+ text-align: center;
+ position: relative;
+ }
 
-        .header h1 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-        }
+ .header h1 {
+ font-size: 1.25rem;
+ font-weight: 700;
+ letter-spacing: 0.05em;
+ }
 
-        .back-btn {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+ .back-btn {
+ position: absolute;
+ left: 16px;
+ top: 50%;
+ transform: translateY(-50%);
+ background: rgba(255, 255, 255, 0.2);
+ border: none;
+ color: white;
+ padding: 6px 12px;
+ border-radius: 8px;
+ font-size: 0.85rem;
+ cursor: pointer;
+ transition: background 0.2s;
+ }
 
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
+ .back-btn:hover {
+ background: rgba(255, 255, 255, 0.3);
+ }
 
-        .content {
-            padding: 20px;
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+ .content {
+ padding: 20px;
+ flex: 1;
+ overflow-y: auto;
+ display: flex;
+ flex-direction: column;
+ gap: 20px;
+ }
 
-        .screen {
-            display: none;
-            flex-direction: column;
-            gap: 20px;
-        }
+ .screen {
+ display: none;
+ flex-direction: column;
+ gap: 20px;
+ }
 
-        .screen.active {
-            display: flex;
-        }
+ .screen.active {
+ display: flex;
+ }
 
-        .menu-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+ .menu-grid {
+ display: flex;
+ flex-direction: column;
+ gap: 12px;
+ }
 
-        .menu-btn {
-            background: white;
-            border: 2px solid #e2e8f0;
-            padding: 16px 20px;
-            border-radius: 14px;
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: var(--text-main);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
+ .menu-btn {
+ background: white;
+ border: 2px solid #e2e8f0;
+ padding: 16px 20px;
+ border-radius: 14px;
+ font-size: 1.05rem;
+ font-weight: 600;
+ color: var(--text-main);
+ cursor: pointer;
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ transition: all 0.2s ease;
+ box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+ }
 
-        .menu-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
-        }
+ .menu-btn:hover {
+ border-color: var(--primary);
+ color: var(--primary);
+ transform: translateY(-1px);
+ box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+ }
 
-        .countdown-banner {
-            background: linear-gradient(135deg, #fef3c7, #fee2e2);
-            border: 2px solid #fcd34d;
-            border-radius: 12px;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            transition: all 0.3s ease;
-        }
-        .countdown-banner .title {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: #d97706;
-        }
-        .countdown-banner .value {
-            font-size: 1rem;
-            font-weight: 800;
-            color: #b45309;
-        }
+ .countdown-banner {
+ background: linear-gradient(135deg, #fef3c7, #fee2e2);
+ border: 2px solid #fcd34d;
+ border-radius: 12px;
+ padding: 14px;
+ display: flex;
+ flex-direction: column;
+ gap: 4px;
+ text-align: center;
+ box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+ transition: all 0.3s ease;
+ }
+ .countdown-banner .title {
+ font-size: 0.8rem;
+ font-weight: 700;
+ color: #d97706;
+ }
+ .countdown-banner .value {
+ font-size: 1rem;
+ font-weight: 800;
+ color: #b45309;
+ }
 
-        .subject-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
+ .subject-grid {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 10px;
+ }
 
-        .subject-card-btn {
-            background: #fff;
-            border: 2px solid #e2e8f0;
-            padding: 14px;
-            border-radius: 12px;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
+ .subject-card-btn {
+ background: #fff;
+ border: 2px solid #e2e8f0;
+ padding: 14px;
+ border-radius: 12px;
+ text-align: left;
+ cursor: pointer;
+ transition: all 0.2s;
+ display: flex;
+ flex-direction: column;
+ gap: 4px;
+ }
 
-        .subject-card-btn.selected {
-            border-color: var(--primary);
-            background: #eef2ff;
-        }
+ .subject-card-btn.selected {
+ border-color: var(--primary);
+ background: #eef2ff;
+ }
 
-        .subject-card-btn .sub-name {
-            font-weight: 700;
-            font-size: 1rem;
-            color: var(--text-main);
-        }
+ .subject-card-btn .sub-name {
+ font-weight: 700;
+ font-size: 1rem;
+ color: var(--text-main);
+ }
 
-        .subject-card-btn .sub-detail {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
+ .subject-card-btn .sub-detail {
+ font-size: 0.75rem;
+ color: var(--text-muted);
+ }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+ .form-group {
+ display: flex;
+ flex-direction: column;
+ gap: 8px;
+ }
 
-        label {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-muted);
-        }
+ label {
+ font-size: 0.9rem;
+ font-weight: 600;
+ color: var(--text-muted);
+ }
 
-        input[type="date"], input[type="text"], input[type="color"] {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 1rem;
-            color: var(--text-main);
-            background: #fff;
-            outline: none;
-            transition: border-color 0.2s;
-        }
+ input[type="date"], input[type="text"], input[type="color"] {
+ width: 100%;
+ padding: 12px 16px;
+ border: 2px solid #e2e8f0;
+ border-radius: 10px;
+ font-size: 1rem;
+ color: var(--text-main);
+ background: #fff;
+ outline: none;
+ transition: border-color 0.2s;
+ }
 
-        input:focus {
-            border-color: var(--primary);
-        }
+ input:focus {
+ border-color: var(--primary);
+ }
 
-        .page-input-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+ .page-input-row {
+ display: flex;
+ align-items: center;
+ gap: 8px;
+ }
 
-        .calc-display-input {
-            background: #fff;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 12px 16px;
-            font-size: 1rem;
-            color: var(--text-main);
-            cursor: pointer;
-            text-align: center;
-            min-height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .calc-display-input.active {
-            border-color: var(--primary);
-            background: #eef2ff;
-        }
+ .calc-display-input {
+ background: #fff;
+ border: 2px solid #e2e8f0;
+ border-radius: 10px;
+ padding: 12px 16px;
+ font-size: 1rem;
+ color: var(--text-main);
+ cursor: pointer;
+ text-align: center;
+ min-height: 48px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ }
+ .calc-display-input.active {
+ border-color: var(--primary);
+ background: #eef2ff;
+ }
 
-        .calc-keyboard {
-            background: #f1f5f9;
-            border-radius: 12px;
-            padding: 12px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 4px;
-        }
+ .calc-keyboard {
+ background: #f1f5f9;
+ border-radius: 12px;
+ padding: 12px;
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 8px;
+ margin-top: 4px;
+ }
 
-        .calc-key {
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            padding: 14px 0;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text-main);
-            cursor: pointer;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-        .calc-key:active {
-            background: #e2e8f0;
-        }
-        .calc-key.action {
-            background: #e2e8f0;
-            color: #475569;
-            font-size: 0.95rem;
-        }
+ .calc-key {
+ background: #ffffff;
+ border: 1px solid #cbd5e1;
+ border-radius: 8px;
+ padding: 14px 0;
+ font-size: 1.1rem;
+ font-weight: 700;
+ color: var(--text-main);
+ cursor: pointer;
+ box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+ }
+ .calc-key:active {
+ background: #e2e8f0;
+ }
+ .calc-key.action {
+ background: #e2e8f0;
+ color: #475569;
+ font-size: 0.95rem;
+ }
 
-        .action-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
-            text-align: center;
-        }
+ .action-btn {
+ background: var(--primary);
+ color: white;
+ border: none;
+ padding: 14px;
+ border-radius: 12px;
+ font-size: 1rem;
+ font-weight: 600;
+ cursor: pointer;
+ transition: background 0.2s, transform 0.1s;
+ box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+ text-align: center;
+ }
 
-        .action-btn:hover {
-            background: var(--primary-hover);
-        }
+ .action-btn:hover {
+ background: var(--primary-hover);
+ }
 
-        .secondary-btn {
-            background: #e2e8f0;
-            color: var(--text-main);
-            box-shadow: none;
-        }
-        .secondary-btn:hover {
-            background: #cbd5e1;
-        }
+ .secondary-btn {
+ background: #e2e8f0;
+ color: var(--text-main);
+ box-shadow: none;
+ }
+ .secondary-btn:hover {
+ background: #cbd5e1;
+ }
 
-        .danger-btn {
-            background: #ef4444;
-            color: white;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
-        }
-        .danger-btn:hover {
-            background: #dc2626;
-        }
+ .danger-btn {
+ background: #ef4444;
+ color: white;
+ box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+ }
+ .danger-btn:hover {
+ background: #dc2626;
+ }
 
-        .preview-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            background: #f1f5f9;
-            padding: 20px;
-            border-radius: 12px;
-            border: 2px dashed #cbd5e1;
-        }
+ .preview-container {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ gap: 16px;
+ background: #f1f5f9;
+ padding: 20px;
+ border-radius: 12px;
+ border: 2px dashed #cbd5e1;
+ }
 
-        canvas {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            background: white;
-        }
+ canvas {
+ max-width: 100%;
+ height: auto;
+ border-radius: 8px;
+ box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+ background: white;
+ }
 
-        .btn-col {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+ .btn-col {
+ display: flex;
+ flex-direction: column;
+ gap: 10px;
+ }
 
-        .home-section-title {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-top: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            user-select: none;
-            cursor: pointer;
-        }
+ .home-section-title {
+ font-size: 1.05rem;
+ font-weight: 700;
+ color: var(--text-main);
+ margin-top: 10px;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ user-select: none;
+ cursor: pointer;
+ }
 
-        .trash-toggle-btn {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 8px;
-            transition: background 0.2s;
-        }
-        .trash-toggle-btn:hover {
-            background: #e2e8f0;
-        }
-        .trash-toggle-btn.active {
-            background: #fee2e2;
-        }
+ .trash-toggle-btn {
+ background: none;
+ border: none;
+ font-size: 1.2rem;
+ cursor: pointer;
+ padding: 4px 8px;
+ border-radius: 8px;
+ transition: background 0.2s;
+ }
+ .trash-toggle-btn:hover {
+ background: #e2e8f0;
+ }
+ .trash-toggle-btn.active {
+ background: #fee2e2;
+ }
 
-        .work-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 220px;
-            overflow-y: auto;
-        }
+ .work-list {
+ display: flex;
+ flex-direction: column;
+ gap: 10px;
+ max-height: 220px;
+ overflow-y: auto;
+ }
 
-        .work-card {
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-left-width: 6px;
-            border-radius: 10px;
-            padding: 12px 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.01);
-            position: relative;
-            cursor: pointer;
-        }
-        .work-card.selectable:hover {
-            background: #f8fafc;
-        }
+ .work-card {
+ background: #fff;
+ border: 1px solid #e2e8f0;
+ border-left-width: 6px;
+ border-radius: 10px;
+ padding: 12px 14px;
+ display: flex;
+ flex-direction: column;
+ gap: 6px;
+ box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+ position: relative;
+ cursor: pointer;
+ }
+ .work-card.selectable:hover {
+ background: #f8fafc;
+ }
 
-        .work-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+ .work-header-row {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ }
 
-        .work-title-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+ .work-title-area {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
 
-        .work-card-title {
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: var(--text-main);
-        }
+ .work-card-title {
+ font-weight: 700;
+ font-size: 0.95rem;
+ color: var(--text-main);
+ }
 
-        .badge {
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-        .badge.status-progress {
-            background: #e0f2fe;
-            color: #0369a1;
-        }
-        .badge.status-complete {
-            background: #fee2e2;
-            color: #991b1b;
-        }
+ .badge {
+ padding: 3px 8px;
+ border-radius: 6px;
+ font-size: 0.75rem;
+ font-weight: bold;
+ }
+ .badge.status-progress {
+ background: #e0f2fe;
+ color: #0369a1;
+ }
+ .badge.status-complete {
+ background: #fee2e2;
+ color: #991b1b;
+ }
 
-        .work-card-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            background: #f8fafc;
-            padding: 6px 10px;
-            border-radius: 6px;
-        }
+ .work-card-info {
+ display: flex;
+ justify-content: space-between;
+ font-size: 0.85rem;
+ color: var(--text-muted);
+ background: #f8fafc;
+ padding: 6px 10px;
+ border-radius: 6px;
+ }
 
-        .delete-action-bar {
-            display: none;
-            gap: 10px;
-            margin-top: 4px;
-        }
-        .delete-action-bar.active {
-            display: flex;
-        }
+ .delete-action-bar {
+ display: none;
+ gap: 10px;
+ margin-top: 4px;
+ }
+ .delete-action-bar.active {
+ display: flex;
+ }
 
-        .mini-calendar {
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .cal-header {
-            font-weight: 700;
-            font-size: 0.95rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--text-main);
-            padding: 0 4px;
-        }
-        .cal-nav-btn {
-            background: #f1f5f9;
-            border: none;
-            padding: 4px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            color: var(--text-muted);
-            transition: background 0.2s;
-        }
-        .cal-nav-btn:hover {
-            background: #e2e8f0;
-            color: var(--text-main);
-        }
-        .cal-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            text-align: center;
-            font-size: 0.8rem;
-        }
-        .cal-day-name {
-            font-weight: 600;
-            color: var(--text-muted);
-            padding-bottom: 4px;
-        }
-        .cal-date {
-            padding: 8px 0;
-            border-radius: 6px;
-            background: #f8fafc;
-            color: var(--text-main);
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .cal-date:hover {
-            background: #e2e8f0;
-        }
-        .cal-date.today {
-            background: #eef2ff;
-            color: var(--primary);
-            font-weight: bold;
-            border: 1px solid var(--primary);
-        }
-        .cal-date.has-limit {
-            background: #fee2e2;
-            color: #991b1b;
-            font-weight: bold;
-        }
+ .mini-calendar {
+ background: #fff;
+ border: 1px solid #e2e8f0;
+ border-radius: 12px;
+ padding: 14px;
+ display: flex;
+ flex-direction: column;
+ gap: 8px;
+ }
+ .cal-header {
+ font-weight: 700;
+ font-size: 0.95rem;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ color: var(--text-main);
+ padding: 0 4px;
+ }
+ .cal-nav-btn {
+ background: #f1f5f9;
+ border: none;
+ padding: 4px 10px;
+ border-radius: 6px;
+ cursor: pointer;
+ font-weight: bold;
+ color: var(--text-muted);
+ transition: background 0.2s;
+ }
+ .cal-nav-btn:hover {
+ background: #e2e8f0;
+ color: var(--text-main);
+ }
+ .cal-grid {
+ display: grid;
+ grid-template-columns: repeat(7, 1fr);
+ gap: 4px;
+ text-align: center;
+ font-size: 0.8rem;
+ }
+ .cal-day-name {
+ font-weight: 600;
+ color: var(--text-muted);
+ padding-bottom: 4px;
+ }
+ .cal-date {
+ padding: 8px 0;
+ border-radius: 6px;
+ background: #f8fafc;
+ color: var(--text-main);
+ cursor: pointer;
+ transition: background 0.2s;
+ }
+ .cal-date:hover {
+ background: #e2e8f0;
+ }
+ .cal-date.today {
+ background: #eef2ff;
+ color: var(--primary);
+ font-weight: bold;
+ border: 1px solid var(--primary);
+ }
+ .cal-date.has-limit {
+ background: #fee2e2;
+ color: #991b1b;
+ font-weight: bold;
+ }
 
-        .empty-state {
-            text-align: center;
-            color: var(--text-muted);
-            padding: 20px 0;
-            font-size: 0.9rem;
-            background: #fff;
-            border-radius: 10px;
-            border: 1px dashed #cbd5e1;
-        }
-    </style>
+ .empty-state {
+ text-align: center;
+ color: var(--text-muted);
+ padding: 20px 0;
+ font-size: 0.9rem;
+ background: #fff;
+ border-radius: 10px;
+ border: 1px dashed #cbd5e1;
+ }
+ </style>
 </head>
 <body>
 
 <div class="app-container">
-    <div class="header">
-        <button id="globalBackBtn" class="back-btn" style="display: none;" onclick="goToMenu()">＜ 戻る</button>
-        <h1 id="headerTitle">提出物計画シール</h1>
-    </div>
+ <div class="header">
+ <button id="globalBackBtn" class="back-btn" style="display: none;" onclick="goToMenu()">＜ 戻る</button>
+ <h1 id="headerTitle">提出物計画シール</h1>
+ </div>
 
-    <div class="content">
-        <!-- 1. メニュー画面（ホーム） -->
-        <div id="screenMenu" class="screen active">
-            <div class="menu-grid">
-                <button class="menu-btn" onclick="playSound('click'); startCreate('goal')">
-                    <span>🎯 目標シール作成</span>
-                    <span style="font-size: 1.2rem;">➔</span>
-                </button>
-                <button class="menu-btn" onclick="playSound('click'); startCreate('current')">
-                    <span>📖 現在シール作成</span>
-                    <span style="font-size: 1.2rem;">➔</span>
-                </button>
-                <button class="menu-btn" onclick="playSound('click'); startCreate('complete')">
-                    <span>✨ 完了シール作成</span>
-                    <span style="font-size: 1.2rem;">➔</span>
-                </button>
-            </div>
+ <div class="content">
+ <!-- 1. メニュー画面（ホーム） -->
+ <div id="screenMenu" class="screen active">
+ <div class="menu-grid">
+ <button class="menu-btn" onclick="playSound('click'); startCreate('goal')">
+ <span>🎯 目標シール作成</span>
+ <span style="font-size: 1.2rem;">➔</span>
+ </button>
+ <button class="menu-btn" onclick="playSound('click'); startCreate('current')">
+ <span>📖 現在シール作成</span>
+ <span style="font-size: 1.2rem;">➔</span>
+ </button>
+ <button class="menu-btn" onclick="playSound('click'); startCreate('complete')">
+ <span>✨ 完了シール作成</span>
+ <span style="font-size: 1.2rem;">➔</span>
+ </button>
+ </div>
 
-            <div id="countdownBanner" class="countdown-banner" style="display: none;">
-                <span class="title">⚠️ 最も期限日が近いワーク ⚠️</span>
-                <span id="countdownText" class="value"></span>
-            </div>
+ <div id="countdownBanner" class="countdown-banner" style="display: none;">
+ <span class="title">⚠️ 最も期限日が近いワーク ⚠️</span>
+ <span id="countdownText" class="value"></span>
+ </div>
 
-            <div class="home-section-title" id="workListHeaderTitle">
-                <span>📋 ワーク一覧・進捗 <span style="font-size: 0.7rem; font-weight: normal; color: var(--text-muted);"></span></span>
-                <button id="trashToggleBtn" class="trash-toggle-btn" onclick="event.stopPropagation(); playSound('click'); toggleDeleteMode()" title="削除するワークを選ぶ">🗑️</button>
-            </div>
-            <div id="workListContainer" class="work-list"></div>
-            <div id="deleteActionBar" class="delete-action-bar">
-                <button class="action-btn danger-btn" style="flex:1; padding: 10px;" onclick="playSound('click'); executeDeleteSelected()">選択したワークを削除</button>
-                <button class="action-btn secondary-btn" style="padding: 10px;" onclick="playSound('click'); toggleDeleteMode()">キャンセル</button>
-            </div>
+ <div class="home-section-title" id="workListHeaderTitle">
+ <span>📋 ワーク一覧・進捗 <span style="font-size: 0.7rem; font-weight: normal; color: var(--text-muted);"></span></span>
+ <button id="trashToggleBtn" class="trash-toggle-btn" onclick="event.stopPropagation(); playSound('click'); toggleDeleteMode()" title="削除するワークを選ぶ">🗑️</button>
+ </div>
+ <div id="workListContainer" class="work-list"></div>
+ <div id="deleteActionBar" class="delete-action-bar">
+ <button class="action-btn danger-btn" style="flex:1; padding: 10px;" onclick="playSound('click'); executeDeleteSelected()">選択したワークを削除</button>
+ <button class="action-btn secondary-btn" style="padding: 10px;" onclick="playSound('click'); toggleDeleteMode()">キャンセル</button>
+ </div>
 
-            <div class="mini-calendar" id="miniCalendar"></div>
-        </div>
+ <div class="mini-calendar" id="miniCalendar"></div>
+ </div>
 
-        <!-- 2. 入力フォーム画面 -->
-        <div id="screenForm" class="screen">
-            <div class="form-group">
-                <label>教科選択</label>
-                <div class="subject-grid" id="subjectGrid"></div>
-            </div>
+ <!-- 2. 入力フォーム画面 -->
+ <div id="screenForm" class="screen">
+ <div class="form-group">
+ <label>教科選択</label>
+ <div class="subject-grid" id="subjectGrid"></div>
+ </div>
 
-            <div class="form-group" id="customSubjectGroup" style="display: none;">
-                <label>名前</label>
-                <input type="text" id="customSubjectInput" placeholder="">
-                <label style="margin-top: 8px;">色を選択</label>
-                <input type="color" id="customColorInput" value="#10b981" style="height: 44px; padding: 4px; cursor: pointer;">
-            </div>
+ <div class="form-group" id="customSubjectGroup" style="display: none;">
+ <label>名前</label>
+ <input type="text" id="customSubjectInput" placeholder="">
+ <label style="margin-top: 8px;">色を選択</label>
+ <input type="color" id="customColorInput" value="#10b981" style="height: 44px; padding: 4px; cursor: pointer;">
+ </div>
 
-            <div class="form-group" id="dateGroup">
-                <label id="dateLabel">期限日</label>
-                <input type="date" id="targetDateInput">
-            </div>
+ <div class="form-group" id="dateGroup">
+ <label id="dateLabel">期限日</label>
+ <input type="date" id="targetDateInput">
+ </div>
 
-            <div class="form-group" id="pageInputGroup">
-                <label id="pageInputLabel">目標ページ</label>
-                <div id="pageInputContainer" class="page-input-row"></div>
-            </div>
+ <div class="form-group" id="pageInputGroup">
+ <label id="pageInputLabel">目標ページ</label>
+ <div id="pageInputContainer" class="page-input-row"></div>
+ </div>
 
-            <div id="calcKeyboardArea" class="calc-keyboard" style="display: none;">
-                <button class="calc-key" onclick="playSound('key'); pressKey('7')">7</button>
-                <button class="calc-key" onclick="playSound('key'); pressKey('8')">8</button>
-                <button class="calc-key" onclick="playSound('key'); pressKey('9')">9</button>
-                <button class="calc-key" onclick="playSound('key'); pressKey('4')">4</button>
-                <button class="calc-key" onclick="playSound('key'); pressKey('5')">5</button>
-                <button class="calc-key" onclick="playSound('key'); pressKey('6')">6</button>
-                <button class="calc-key" onclick="playSound('key'); pressKey('1')">1</button>
-                <button class="calc-key" onclick="playSound('key'); pressKey('2')">2</button>
-                <button class="calc-key" onclick="playSound('key'); pressKey('3')">3</button>
-                <button class="calc-key action" onclick="playSound('key'); pressKey('C')">C</button>
-                <button class="calc-key" onclick="playSound('key'); pressKey('0')">0</button>
-                <button class="calc-key action" onclick="playSound('key'); pressKey('DEL')">←</button>
-            </div>
+ <div id="calcKeyboardArea" class="calc-keyboard" style="display: none;">
+ <button class="calc-key" onclick="playSound('key'); pressKey('7')">7</button>
+ <button class="calc-key" onclick="playSound('key'); pressKey('8')">8</button>
+ <button class="calc-key" onclick="playSound('key'); pressKey('9')">9</button>
+ <button class="calc-key" onclick="playSound('key'); pressKey('4')">4</button>
+ <button class="calc-key" onclick="playSound('key'); pressKey('5')">5</button>
+ <button class="calc-key" onclick="playSound('key'); pressKey('6')">6</button>
+ <button class="calc-key" onclick="playSound('key'); pressKey('1')">1</button>
+ <button class="calc-key" onclick="playSound('key'); pressKey('2')">2</button>
+ <button class="calc-key" onclick="playSound('key'); pressKey('3')">3</button>
+ <button class="calc-key action" onclick="playSound('key'); pressKey('C')">C</button>
+ <button class="calc-key" onclick="playSound('key'); pressKey('0')">0</button>
+ <button class="calc-key action" onclick="playSound('key'); pressKey('DEL')">←</button>
+ </div>
 
-            <button class="action-btn" onclick="playSound('click'); generateSeal()">シールを作成する</button>
-        </div>
+ <button class="action-btn" onclick="playSound('click'); generateSeal()">シールを作成する</button>
+ </div>
 
-        <!-- 3. シールプレビュー＆印刷画面 -->
-        <div id="screenPreview" class="screen">
-            <div class="preview-container">
-                <canvas id="sealCanvas" width="600" height="300"></canvas>
-                <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;"></p>
-            </div>
-           
-            <div class="btn-col">
-                <button class="action-btn" onclick="playSound('click'); printSeal()">印刷</button>
-                <button class="action-btn secondary-btn" onclick="playSound('click'); backToForm()">修正する</button>
-                <button class="action-btn secondary-btn" onclick="playSound('click'); goToMenu()">閉じる</button>
-            </div>
-        </div>
-    </div>
+ <!-- 3. シールプレビュー＆印刷画面 -->
+ <div id="screenPreview" class="screen">
+ <div class="preview-container">
+ <canvas id="sealCanvas" width="600" height="300"></canvas>
+ <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;"></p>
+ </div>
+ 
+ <div class="btn-col">
+ <button class="action-btn" onclick="playSound('click'); printSeal()">印刷</button>
+ <button class="action-btn secondary-btn" onclick="playSound('click'); backToForm()">修正する</button>
+ <button class="action-btn secondary-btn" onclick="playSound('click'); goToMenu()">閉じる</button>
+ </div>
+ </div>
+ </div>
 </div>
 
 <script>
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playSound(type) {
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        if (type === 'click') {
-            osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.05);
-            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.05);
-        } else if (type === 'key') {
-            osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.03);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.03);
-        } else if (type === 'complete') {
-            const now = audioCtx.currentTime;
-            osc.frequency.setValueAtTime(523.25, now);
-            osc.frequency.setValueAtTime(659.25, now + 0.1);
-            osc.frequency.setValueAtTime(783.99, now + 0.2);
-            osc.frequency.setValueAtTime(1046.50, now + 0.3);
-            gain.gain.setValueAtTime(0.15, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
-            osc.start(now);
-            osc.stop(now + 0.6);
-        }
-    }
-
-    let currentMode = '';
-    let selectedSubjectKey = '国語';
-    let selectedSubjectDetail = '学習漢字ノート';
-    let selectedCustomColor = '#ef4444';
-    let worksData = JSON.parse(localStorage.getItem('study_works_data')) || {};
-    let customSubjects = JSON.parse(localStorage.getItem('study_custom_subjects')) || [];
-
-    let isDeleteMode = false;
-    let selectedForDelete = new Set();
-    let activeInputId = null;
-
-    let calendarYear = new Date().getFullYear();
-    let calendarMonth = new Date().getMonth();
-    let isBannerVisible = true;
-
-    // 起動時に期限切れのワークを自動削除する処理
-    function checkAndCleanExpiredWorks() {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        let updated = false;
-        Object.keys(worksData).forEach(key => {
-            const w = worksData[key];
-            if (w.limitDate) {
-                const limit = new Date(w.limitDate);
-                limit.setHours(0, 0, 0, 0);
-                // 期限の日付を過ぎている場合（今日より前）は自動削除
-                if (limit < today) {
-                    delete worksData[key];
-                    customSubjects = customSubjects.filter(cs => cs.name !== key);
-                    updated = true;
-                }
-            }
-        });
-
-        if (updated) {
-            localStorage.setItem('study_works_data', JSON.stringify(worksData));
-            localStorage.setItem('study_custom_subjects', JSON.stringify(customSubjects));
-        }
-    }
-
-    function getTodayString() {
-        const d = new Date();
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    }
-
-    function formatDisplayDate(dateStr) {
-        if(!dateStr) return '';
-        const parts = dateStr.split('-');
-        if(parts.length === 3) {
-            return `${parts[1]}/${parts[2]}`;
-        }
-        return dateStr;
-    }
-
-    function goToMenu() {
-        checkAndCleanExpiredWorks(); // 期限切れチェック実行
-        isDeleteMode = false;
-        selectedForDelete.clear();
-        showScreen('screenMenu');
-        document.getElementById('globalBackBtn').style.display = 'none';
-        document.getElementById('headerTitle').innerText = '提出物計画シール';
-        renderWorkList();
-        renderCountdown();
-        renderCalendar();
-    }
-
-    function showScreen(screenId) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(screenId).classList.add('active');
-        if(screenId !== 'screenMenu') {
-            document.getElementById('globalBackBtn').style.display = 'block';
-        }
-    }
-
-    function renderSubjectGrid() {
-        const grid = document.getElementById('subjectGrid');
-        grid.innerHTML = `
-            <div class="subject-card-btn ${selectedSubjectKey === '国語' ? 'selected' : ''}" onclick="playSound('click'); selectSubject('国語', '学習漢字ノート', '#ef4444', this)">
-                <span class="sub-name">国語</span>
-                <span class="sub-detail">学習漢字ノート</span>
-            </div>
-            <div class="subject-card-btn ${selectedSubjectKey === '数学' ? 'selected' : ''}" onclick="playSound('click'); selectSubject('数学', '数学の学習ノート', '#0ea5e9', this)">
-                <span class="sub-name">数学</span>
-                <span class="sub-detail">数学の学習ノート</span>
-            </div>
-            <div class="subject-card-btn ${selectedSubjectKey === '英語' ? 'selected' : ''}" onclick="playSound('click'); selectSubject('英語', 'Enjoyワーク', '#8b5cf6', this)">
-                <span class="sub-name">英語</span>
-                <span class="sub-detail">Enjoyワーク</span>
-            </div>
-            <div class="subject-card-btn ${selectedSubjectKey === '理科' ? 'selected' : ''}" onclick="playSound('click'); selectSubject('理科', 'よくわかる理科の学習', '#f97316', this)">
-                <span class="sub-name">理科</span>
-                <span class="sub-detail">よくわかる理科の学習</span>
-            </div>
-        `;
-
-        customSubjects.forEach(cs => {
-            const isSel = (selectedSubjectKey === 'その他' && selectedSubjectDetail === cs.name);
-            grid.innerHTML += `
-                <div class="subject-card-btn ${isSel ? 'selected' : ''}" onclick="playSound('click'); selectSubject('その他', '${cs.name}', '${cs.color}', this)">
-                    <span class="sub-name">${cs.name}</span>
-                    <span class="sub-detail">カスタムワーク</span>
-                </div>
-            `;
-        });
-
-        if (currentMode === 'goal') {
-            grid.innerHTML += `
-                <div class="subject-card-btn ${selectedSubjectKey === 'その他' && selectedSubjectDetail === '' ? 'selected' : ''}" style="grid-column: span 2;" onclick="playSound('click'); selectSubject('その他', '', '#10b981', this)">
-                    <span class="sub-name">＋ その他を追加</span>
-                    <span class="sub-detail">その他</span>
-                </div>
-            `;
-        }
-    }
-
-    function selectSubject(key, detail, color, element) {
-        selectedSubjectKey = key;
-        selectedSubjectDetail = detail;
-        selectedCustomColor = color;
-       
-        renderSubjectGrid();
-
-        const customGroup = document.getElementById('customSubjectGroup');
-        if (key === 'その他' && detail === '' && currentMode === 'goal') {
-            customGroup.style.display = 'flex';
-        } else {
-            customGroup.style.display = 'none';
-        }
-    }
-
-    function startCreate(mode) {
-        if (mode === 'complete') {
-            const keys = Object.keys(worksData);
-            if (keys.length === 0) {
-                alert('登録されているワークがありません。まずは目標シールや現在シールを作成してください！');
-                return;
-            }
-            const canComplete = keys.some(k => {
-                const w = worksData[k];
-                return w.goalEndPage > 0 && w.currentProgPage >= w.goalEndPage;
-            });
-
-            if (!canComplete) {
-                alert('⚠️ まだどのワークも目標ページに達していません！現在シールで目標ページまで進んだページを入力してから完了シールを作成してください。');
-                return;
-            }
-        }
-
-        currentMode = mode;
-        showScreen('screenForm');
-
-        const titles = {
-            'goal': '目標シール作成',
-            'current': '現在シール作成',
-            'complete': '完了シール作成'
-        };
-        document.getElementById('headerTitle').innerText = titles[mode];
-
-        selectedSubjectKey = '国語';
-        selectedSubjectDetail = '学習漢字ノート';
-        selectedCustomColor = '#ef4444';
-        renderSubjectGrid();
-
-        const dateGroup = document.getElementById('dateGroup');
-        const dateLabel = document.getElementById('dateLabel');
-        const dateInput = document.getElementById('targetDateInput');
-        const pageGroup = document.getElementById('pageInputGroup');
-        const pageLabel = document.getElementById('pageInputLabel');
-        const pageContainer = document.getElementById('pageInputContainer');
-        const keyboardArea = document.getElementById('calcKeyboardArea');
-
-        dateInput.value = getTodayString();
-
-        if (mode === 'goal') {
-            dateGroup.style.display = 'flex';
-            dateLabel.innerText = '期限日';
-            pageGroup.style.display = 'flex';
-            pageLabel.innerText = '目標ページ';
-            pageContainer.innerHTML = `
-                <span>P.</span>
-                <div id="displayStart" class="calc-display-input" style="flex:1;" onclick="setActiveInput('displayStart')"></div>
-                <span>〜 P.</span>
-                <div id="displayEnd" class="calc-display-input" style="flex:1;" onclick="setActiveInput('displayEnd')"></div>
-            `;
-            keyboardArea.style.display = 'grid';
-            setActiveInput('displayStart');
-        } else if (mode === 'current') {
-            dateGroup.style.display = 'none';
-            pageGroup.style.display = 'flex';
-            pageLabel.innerText = '進んだページ';
-            pageContainer.innerHTML = `
-                <div id="displayEnd" class="calc-display-input" style="flex:1;" onclick="setActiveInput('displayEnd')"></div>
-                <span>ページまで</span>
-            `;
-            keyboardArea.style.display = 'grid';
-            setActiveInput('displayEnd');
-        } else if (mode === 'complete') {
-            dateGroup.style.display = 'none';
-            pageGroup.style.display = 'none';
-            keyboardArea.style.display = 'none';
-        }
-
-        document.getElementById('customSubjectInput').value = '';
-    }
-
-    function setActiveInput(id) {
-        activeInputId = id;
-        document.querySelectorAll('.calc-display-input').forEach(el => el.classList.remove('active'));
-        const target = document.getElementById(id);
-        if(target) target.classList.add('active');
-    }
-
-    function pressKey(val) {
-        if (!activeInputId) return;
-        const target = document.getElementById(activeInputId);
-        if (!target) return;
-
-        let currentVal = target.innerText;
-
-        if (val === 'C') {
-            target.innerText = '';
-        } else if (val === 'DEL') {
-            target.innerText = currentVal.slice(0, -1);
-        } else {
-            if (currentVal.length < 5) {
-                target.innerText = currentVal + val;
-            }
-        }
-    }
-
-    function getFullSubjectName() {
-        if (selectedSubjectKey === 'その他' && selectedSubjectDetail === '') {
-            const custom = document.getElementById('customSubjectInput').value.trim();
-            const color = document.getElementById('customColorInput').value;
-            if (custom) {
-                if (!customSubjects.some(s => s.name === custom)) {
-                    customSubjects.push({ name: custom, color: color });
-                    localStorage.setItem('study_custom_subjects', JSON.stringify(customSubjects));
-                }
-                selectedCustomColor = color;
-                return `${custom}`;
-            }
-            return 'その他';
-        } else if (selectedSubjectKey === 'その他') {
-            return `${selectedSubjectDetail}`;
-        }
-        return `${selectedSubjectKey}:${selectedSubjectDetail}`;
-    }
-
-    function backToForm() {
-        showScreen('screenForm');
-    }
-
-    let generatedDataUrl = '';
-
-    function generateSeal() {
-        const fullSubject = getFullSubjectName();
-        const mainColor = selectedCustomColor;
-
-        const todayStr = getTodayString();
-        const displayToday = formatDisplayDate(todayStr);
-        const targetDateVal = document.getElementById('targetDateInput').value;
-        const displayTarget = formatDisplayDate(targetDateVal);
-
-        let pageText = '';
-        let goalEndPage = 0;
-        let currentProgressPage = 0;
-
-        if (currentMode === 'goal') {
-            const startEl = document.getElementById('displayStart');
-            const endEl = document.getElementById('displayEnd');
-            const start = startEl ? parseInt(startEl.innerText.trim()) || 0 : 0;
-            const end = endEl ? parseInt(endEl.innerText.trim()) || 0 : 0;
-            if (start && end) {
-                pageText = `P.${start}〜P.${end}`;
-                goalEndPage = end;
-            } else if (end) {
-                pageText = `〜P.${end}`;
-                goalEndPage = end;
-            } else {
-                pageText = '未設定';
-            }
-        } else if (currentMode === 'current') {
-            const endEl = document.getElementById('displayEnd');
-            const end = endEl ? endEl.innerText.trim() : '';
-            currentProgressPage = end ? parseInt(end) || 0 : 0;
-            pageText = end ? `${end}ページまで` : '未入力';
-        }
-
-        if (currentMode === 'complete') {
-            const targetWork = worksData[fullSubject];
-            if (!targetWork || targetWork.currentProgPage < targetWork.goalEndPage) {
-                alert(`⚠️ 「${fullSubject}」はまだ目標ページ（P.${targetWork ? targetWork.goalEndPage : '未設定'}）に達していません！`);
-                showScreen('screenMenu');
-                return;
-            }
-        }
-
-        const canvas = document.getElementById('sealCanvas');
-        const ctx = canvas.getContext('2d');
-       
-        canvas.width = 600;
-        canvas.height = 300;
-
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.strokeStyle = mainColor;
-        ctx.lineWidth = 4;
-        ctx.strokeRect(12, 12, canvas.width - 24, canvas.height - 24);
-
-        ctx.fillStyle = mainColor;
-        ctx.fillRect(12, 12, 16, canvas.height - 24);
-
-        let subName = fullSubject;
-        let subDetail = '';
-        if (fullSubject.includes(':')) {
-            const parts = fullSubject.split(':');
-            subName = parts[0];
-            subDetail = parts[1];
-        }
-
-        if (currentMode === 'complete') {
-            playSound('complete');
-            ctx.fillStyle = '#1e293b';
-            ctx.font = 'bold 34px sans-serif';
-            ctx.fillText(subName, 48, 70);
-
-            ctx.fillStyle = '#64748b';
-            ctx.font = '24px sans-serif';
-            ctx.fillText(subDetail, 48, 110);
-            ctx.fillText(`完了日: ${displayToday}`, 48, 160);
-
-            ctx.save();
-            ctx.translate(480, 150);
-            ctx.beginPath();
-            ctx.arc(0, 0, 75, 0, Math.PI * 2);
-            ctx.fillStyle = '#ef4444';
-            ctx.fill();
-            ctx.lineWidth = 4;
-            ctx.strokeStyle = '#ffffff';
-            ctx.stroke();
-
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 64px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('完', 0, 4);
-            ctx.restore();
-
-            updateWorkData(fullSubject, mainColor, null, null, targetDateVal, 0, true);
-
-        } else if (currentMode === 'goal') {
-            ctx.fillStyle = mainColor;
-            ctx.roundRect ? ctx.roundRect(48, 28, 110, 36, 6) : ctx.fillRect(48, 28, 110, 36);
-            ctx.fill();
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 18px sans-serif';
-            ctx.fillText('🎯 目標', 68, 53);
-
-            ctx.fillStyle = '#1e293b';
-            ctx.font = 'bold 30px sans-serif';
-            ctx.fillText(subDetail ? `${subName} : ${subDetail}` : subName, 48, 105);
-
-            ctx.fillStyle = '#475569';
-            ctx.font = 'bold 28px sans-serif';
-            ctx.fillText(`目標: ${pageText}`, 48, 165);
-
-            ctx.fillStyle = '#ef4444';
-            ctx.font = 'bold 22px sans-serif';
-            ctx.fillText(`期限: ${displayTarget}`, 48, 215);
-
-            updateWorkData(fullSubject, mainColor, null, pageText, targetDateVal, { goalEnd: goalEndPage }, false);
-
-        } else if (currentMode === 'current') {
-            ctx.fillStyle = mainColor;
-            ctx.roundRect ? ctx.roundRect(48, 28, 110, 36, 6) : ctx.fillRect(48, 28, 110, 36);
-            ctx.fill();
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 18px sans-serif';
-            ctx.fillText('📖 現在', 68, 53);
-
-            ctx.fillStyle = '#1e293b';
-            ctx.font = 'bold 30px sans-serif';
-            ctx.fillText(subDetail ? `${subName} : ${subDetail}` : subName, 48, 105);
-
-            ctx.fillStyle = mainColor;
-            ctx.font = 'bold 30px sans-serif';
-            ctx.fillText(`進捗: ${pageText}`, 48, 165);
-
-            ctx.fillStyle = '#64748b';
-            ctx.font = '20px sans-serif';
-            ctx.fillText(`記録日: ${displayToday}`, 48, 215);
-
-            updateWorkData(fullSubject, mainColor, pageText, null, null, { currentProg: currentProgressPage }, false);
-        }
-
-        generatedDataUrl = canvas.toDataURL('image/png');
-        showScreen('screenPreview');
-    }
-
-    function updateWorkData(fullSubject, color, currentVal, goalVal, dateVal, pageInfo, isComplete) {
-        if (!worksData[fullSubject]) {
-            worksData[fullSubject] = {
-                color: color,
-                current: '-',
-                goal: '-',
-                limitDate: '',
-                goalEndPage: 0,
-                currentProgPage: 0,
-                status: '進行中'
-            };
-        }
-        worksData[fullSubject].color = color;
-        if (currentVal !== null) worksData[fullSubject].current = currentVal;
-        if (goalVal !== null) worksData[fullSubject].goal = goalVal;
-        if (dateVal) worksData[fullSubject].limitDate = dateVal;
-       
-        if (pageInfo) {
-            if (pageInfo.goalEnd !== undefined && pageInfo.goalEnd > 0) {
-                worksData[fullSubject].goalEndPage = pageInfo.goalEnd;
-            }
-            if (pageInfo.currentProg !== undefined && pageInfo.currentProg > 0) {
-                worksData[fullSubject].currentProgPage = pageInfo.currentProg;
-            }
-        }
-
-        if (worksData[fullSubject].goalEndPage > 0 && worksData[fullSubject].currentProgPage > 0) {
-            worksData[fullSubject].remainingPages = Math.max(0, worksData[fullSubject].goalEndPage - worksData[fullSubject].currentProgPage);
-        } else if (worksData[fullSubject].goalEndPage > 0) {
-            worksData[fullSubject].remainingPages = worksData[fullSubject].goalEndPage;
-        } else {
-            worksData[fullSubject].remainingPages = 0;
-        }
-
-        if (isComplete) {
-            worksData[fullSubject].status = '完了 🎉';
-            // その他ワークは完了したら一覧から完全削除
-            if (!['国語', '数学', '英語', '理科'].some(sub => fullSubject.startsWith(sub))) {
-                delete worksData[fullSubject];
-                customSubjects = customSubjects.filter(cs => cs.name !== fullSubject);
-                localStorage.setItem('study_custom_subjects', JSON.stringify(customSubjects));
-            }
-        } else {
-            worksData[fullSubject].status = '進行中';
-        }
-        localStorage.setItem('study_works_data', JSON.stringify(worksData));
-    }
-
-    function toggleDeleteMode() {
-        isDeleteMode = !isDeleteMode;
-        selectedForDelete.clear();
-       
-        const btn = document.getElementById('trashToggleBtn');
-        const actionBar = document.getElementById('deleteActionBar');
-       
-        if (isDeleteMode) {
-            btn.classList.add('active');
-            actionBar.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-            actionBar.classList.remove('active');
-        }
-        renderWorkList();
-    }
-
-    function handleCardClick(fullSubject) {
-        if (!isDeleteMode) return;
-       
-        if (selectedForDelete.has(fullSubject)) {
-            selectedForDelete.delete(fullSubject);
-        } else {
-            selectedForDelete.add(fullSubject);
-        }
-        renderWorkList();
-    }
-
-    function executeDeleteSelected() {
-        if (selectedForDelete.size === 0) {
-            alert('削除するワークが選択されていません。');
-            return;
-        }
-
-        if (confirm(`選択した ${selectedForDelete.size} 件のワークを削除しますか？`)) {
-            selectedForDelete.forEach(key => {
-                delete worksData[key];
-                customSubjects = customSubjects.filter(cs => cs.name !== key);
-            });
-            localStorage.setItem('study_works_data', JSON.stringify(worksData));
-            localStorage.setItem('study_custom_subjects', JSON.stringify(customSubjects));
-            toggleDeleteMode();
-        }
-    }
-
-    function renderCountdown() {
-        const banner = document.getElementById('countdownBanner');
-        const textEl = document.getElementById('countdownText');
-       
-        if (!isBannerVisible) {
-            banner.style.display = 'none';
-            return;
-        }
-
-        const today = new Date();
-        today.setHours(0,0,0,0);
-
-        let nearestWork = null;
-        let minDays = Infinity;
-
-        Object.keys(worksData).forEach(key => {
-            const w = worksData[key];
-            if (w.limitDate && !w.status.includes('完了')) {
-                const limit = new Date(w.limitDate);
-                limit.setHours(0,0,0,0);
-                const diffTime = limit - today;
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                if (diffDays >= 0 && diffDays < minDays) {
-                    minDays = diffDays;
-                    nearestWork = { name: key, days: diffDays, remaining: w.remainingPages };
-                }
-            }
-        });
-
-        if (nearestWork) {
-            banner.style.display = 'flex';
-            textEl.innerText = `「${nearestWork.name}」 期限まであと ${nearestWork.days} 日 (残り約 ${nearestWork.remaining} ページ)`;
-        } else {
-            banner.style.display = 'none';
-        }
-    }
-
-    function changeCalendarMonth(direction) {
-        calendarMonth += direction;
-        if (calendarMonth > 11) {
-            calendarMonth = 0;
-            calendarYear++;
-        } else if (calendarMonth < 0) {
-            calendarMonth = 11;
-            calendarYear--;
-        }
-        renderCalendar();
-    }
-
-    function onCalendarDateClick(year, month, date) {
-        playSound('click');
-        const targetStr = `${year}-${String(month).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
-       
-        const matchedWorks = [];
-        Object.keys(worksData).forEach(key => {
-            const w = worksData[key];
-            if (w.limitDate === targetStr) {
-                // 完了していてもカレンダーには表示され、タップしたら内容がわかる
-                matchedWorks.push(`・${key} [${w.status}] (残り約 ${w.remainingPages}ページ)`);
-            }
-        });
-
-        if (matchedWorks.length > 0) {
-            alert(`📅 ${month}月${date}日のワーク:\n\n` + matchedWorks.join('\n'));
-        } else {
-            alert(`📅 ${month}月${date}日の提出物はありません！`);
-        }
-    }
-
-    function renderCalendar() {
-        const calEl = document.getElementById('miniCalendar');
-
-        const firstDay = new Date(calendarYear, calendarMonth, 1).getDay();
-        const lastDate = new Date(calendarYear, calendarMonth + 1, 0).getDate();
-
-        let html = `
-            <div class="cal-header">
-                <button class="cal-nav-btn" onclick="playSound('click'); changeCalendarMonth(-1)">＜</button>
-                <span>${calendarYear}年 ${calendarMonth + 1}月</span>
-                <button class="cal-nav-btn" onclick="playSound('click'); changeCalendarMonth(1)">＞</button>
-            </div>
-            <div class="cal-grid">
-                <div class="cal-day-name" style="color:#ef4444;">日</div>
-                <div class="cal-day-name">月</div>
-                <div class="cal-day-name">火</div>
-                <div class="cal-day-name">水</div>
-                <div class="cal-day-name">木</div>
-                <div class="cal-day-name">金</div>
-                <div class="cal-day-name" style="color:#0ea5e9;">土</div>
-        `;
-
-        const limitMap = {};
-        Object.keys(worksData).forEach(key => {
-            const w = worksData[key];
-            if (w.limitDate) {
-                // 完了していてもカレンダーの色つきマークは消えないようにする
-                const parts = w.limitDate.split('-');
-                if (parseInt(parts[0]) === calendarYear && parseInt(parts[1]) === (calendarMonth + 1)) {
-                    limitMap[parseInt(parts[2])] = true;
-                }
-            }
-        });
-
-        const todayObj = new Date();
-        const isCurrentMonthYear = (todayObj.getFullYear() === calendarYear && todayObj.getMonth() === calendarMonth);
-        const todayDate = todayObj.getDate();
-
-        for (let i = 0; i < firstDay; i++) {
-            html += `<div></div>`;
-        }
-
-        for (let d = 1; d <= lastDate; d++) {
-            const isToday = (isCurrentMonthYear && d === todayDate);
-            const hasLimit = limitMap[d];
-            let cls = 'cal-date';
-            if (isToday) cls += ' today';
-            if (hasLimit) cls += ' has-limit';
-
-            html += `<div class="${cls}" onclick="onCalendarDateClick(${calendarYear}, ${calendarMonth + 1}, ${d})">${d}</div>`;
-        }
-
-        html += `</div>`;
-        calEl.innerHTML = html;
-    }
-
-    function renderWorkList() {
-        const container = document.getElementById('workListContainer');
-        container.innerHTML = '';
-
-        const keys = Object.keys(worksData);
-        if (keys.length === 0) {
-            container.innerHTML = `<div class="empty-state">まだ登録されているワークはありません。<br>シールを作成すると自動でここに追加されます！</div>`;
-            return;
-        }
-
-        keys.forEach(fullSubject => {
-            const data = worksData[fullSubject];
-            const borderColor = data.color || '#6366f1';
-            const isCompleted = data.status.includes('完了');
-            const badgeClass = isCompleted ? 'badge status-complete' : 'badge status-progress';
-            const isSelected = selectedForDelete.has(fullSubject);
-            const displayLimit = data.limitDate ? `期限: ${formatDisplayDate(data.limitDate)}` : '';
-            const displayRemain = data.remainingPages !== undefined ? `残り約 ${data.remainingPages}ページ` : '';
-
-            const card = document.createElement('div');
-            card.className = `work-card ${isDeleteMode ? 'selectable' : ''}`;
-            card.style.borderLeftColor = borderColor;
-            if (isSelected) {
-                card.style.background = '#fee2e2';
-            }
-
-            card.onclick = () => handleCardClick(fullSubject);
-
-            card.innerHTML = `
-                <div class="work-header-row">
-                    <div class="work-title-area">
-                        ${isDeleteMode ? `<input type="checkbox" ${isSelected ? 'checked' : ''} style="transform: scale(1.2); pointer-events: none;">` : ''}
-                        <span class="work-card-title">${fullSubject}</span>
-                    </div>
-                    <span class="${badgeClass}">${data.status}</span>
-                </div>
-                <div class="work-card-info">
-                    <span>進捗: <strong>${data.current}</strong></span>
-                    <span>目標: <strong>${data.goal}</strong></span>
-                </div>
-                <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between;">
-                    <span>${displayLimit}</span>
-                    <span style="color: #ef4444; font-weight: bold;">${displayRemain}</span>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    async function printSeal() {
-        if (!generatedDataUrl) return;
-
-        const res = await fetch(generatedDataUrl);
-        const blob = await res.blob();
-        const file = new File([blob], "study_seal.png", { type: "image/png" });
-
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            try {
-                await navigator.share({
-                    title: '提出物シール',
-                    text: 'シールプリンター用に作成したシール画像です。',
-                    files: [file],
-                });
-                return;
-            } catch (err) {
-                if (err.name !== 'AbortError') {
-                    console.log('共有キャンセル', err);
-                }
-            }
-        }
-
-        const a = document.createElement('a');
-        a.href = generatedDataUrl;
-        a.download = 'study_seal.png';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        alert('シール画像をダウンロードしました！プリンターアプリから印刷してください。');
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const titleEl = document.getElementById('workListHeaderTitle');
-        let lastTap = 0;
-        titleEl.addEventListener('touchend', (e) => {
-            const currentTime = new Date().getTime();
-            const tapLength = currentTime - lastTap;
-            if (tapLength < 300 && tapLength > 0) {
-                playSound('click');
-                isBannerVisible = !isBannerVisible;
-                renderCountdown();
-                e.preventDefault();
-            }
-            lastTap = currentTime;
-        });
-
-        titleEl.addEventListener('dblclick', () => {
-            playSound('click');
-            isBannerVisible = !isBannerVisible;
-            renderCountdown();
-        });
-    });
-
-    goToMenu();
+ const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+ function playSound(type) {
+ if (audioCtx.state === 'suspended') {
+ audioCtx.resume();
+ }
+ const osc = audioCtx.createOscillator();
+ const gain = audioCtx.createGain();
+ osc.connect(gain);
+ gain.connect(audioCtx.destination);
+
+ if (type === 'click') {
+ osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+ osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.05);
+ gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+ gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+ osc.start();
+ osc.stop(audioCtx.currentTime + 0.05);
+ } else if (type === 'key') {
+ osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+ gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+ gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.03);
+ osc.start();
+ osc.stop(audioCtx.currentTime + 0.03);
+ } else if (type === 'complete') {
+ const now = audioCtx.currentTime;
+ osc.frequency.setValueAtTime(523.25, now);
+ osc.frequency.setValueAtTime(659.25, now + 0.1);
+ osc.frequency.setValueAtTime(783.99, now + 0.2);
+ osc.frequency.setValueAtTime(1046.50, now + 0.3);
+ gain.gain.setValueAtTime(0.15, now);
+ gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+ osc.start(now);
+ osc.stop(now + 0.6);
+ }
+ }
+
+ let currentMode = '';
+ let selectedSubjectKey = '国語';
+ let selectedSubjectDetail = '学習漢字ノート';
+ let selectedCustomColor = '#ef4444';
+ let worksData = JSON.parse(localStorage.getItem('study_works_data')) || {};
+ let customSubjects = JSON.parse(localStorage.getItem('study_custom_subjects')) || [];
+
+ let isDeleteMode = false;
+ let selectedForDelete = new Set();
+ let activeInputId = null;
+
+ let calendarYear = new Date().getFullYear();
+ let calendarMonth = new Date().getMonth();
+ let isBannerVisible = true;
+
+ function checkAndCleanExpiredWorks() {
+ const today = new Date();
+ today.setHours(0, 0, 0, 0);
+
+ let updated = false;
+ Object.keys(worksData).forEach(key => {
+ const w = worksData[key];
+ if (w.limitDate) {
+ const limit = new Date(w.limitDate);
+ limit.setHours(0, 0, 0, 0);
+ if (limit < today) {
+ delete worksData[key];
+ customSubjects = customSubjects.filter(cs => cs.name !== key);
+ updated = true;
+ }
+ }
+ });
+
+ if (updated) {
+ localStorage.setItem('study_works_data', JSON.stringify(worksData));
+ localStorage.setItem('study_custom_subjects', JSON.stringify(customSubjects));
+ }
+ }
+
+ function getTodayString() {
+ const d = new Date();
+ const year = d.getFullYear();
+ const month = String(d.getMonth() + 1).padStart(2, '0');
+ const day = String(d.getDate()).padStart(2, '0');
+ return `${year}-${month}-${day}`;
+ }
+
+ function formatDisplayDate(dateStr) {
+ if(!dateStr) return '';
+ const parts = dateStr.split('-');
+ if(parts.length === 3) {
+ return `${parts[1]}/${parts[2]}`;
+ }
+ return dateStr;
+ }
+
+ function goToMenu() {
+ checkAndCleanExpiredWorks();
+ isDeleteMode = false;
+ selectedForDelete.clear();
+ showScreen('screenMenu');
+ document.getElementById('globalBackBtn').style.display = 'none';
+ document.getElementById('headerTitle').innerText = '提出物計画シール';
+ renderWorkList();
+ renderCountdown();
+ renderCalendar();
+ }
+
+ function showScreen(screenId) {
+ document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+ document.getElementById(screenId).classList.add('active');
+ if(screenId !== 'screenMenu') {
+ document.getElementById('globalBackBtn').style.display = 'block';
+ }
+ }
+
+ function renderSubjectGrid() {
+ const grid = document.getElementById('subjectGrid');
+ grid.innerHTML = `
+ <div class="subject-card-btn ${selectedSubjectKey === '国語' ? 'selected' : ''}" onclick="playSound('click'); selectSubject('国語', '学習漢字ノート', '#ef4444', this)">
+ <span class="sub-name">国語</span>
+ <span class="sub-detail">学習漢字ノート</span>
+ </div>
+ <div class="subject-card-btn ${selectedSubjectKey === '数学' ? 'selected' : ''}" onclick="playSound('click'); selectSubject('数学', '数学の学習ノート', '#0ea5e9', this)">
+ <span class="sub-name">数学</span>
+ <span class="sub-detail">数学の学習ノート</span>
+ </div>
+ <div class="subject-card-btn ${selectedSubjectKey === '英語' ? 'selected' : ''}" onclick="playSound('click'); selectSubject('英語', 'Enjoyワーク', '#8b5cf6', this)">
+ <span class="sub-name">英語</span>
+ <span class="sub-detail">Enjoyワーク</span>
+ </div>
+ <div class="subject-card-btn ${selectedSubjectKey === '理科' ? 'selected' : ''}" onclick="playSound('click'); selectSubject('理科', 'よくわかる理科の学習', '#f97316', this)">
+ <span class="sub-name">理科</span>
+ <span class="sub-detail">よくわかる理科の学習</span>
+ </div>
+ `;
+
+ customSubjects.forEach(cs => {
+ const isSel = (selectedSubjectKey === 'その他' && selectedSubjectDetail === cs.name);
+ grid.innerHTML += `
+ <div class="subject-card-btn ${isSel ? 'selected' : ''}" onclick="playSound('click'); selectSubject('その他', '${cs.name}', '${cs.color}', this)">
+ <span class="sub-name">${cs.name}</span>
+ <span class="sub-detail">カスタムワーク</span>
+ </div>
+ `;
+ });
+
+ if (currentMode === 'goal') {
+ grid.innerHTML += `
+ <div class="subject-card-btn ${selectedSubjectKey === 'その他' && selectedSubjectDetail === '' ? 'selected' : ''}" style="grid-column: span 2;" onclick="playSound('click'); selectSubject('その他', '', '#10b981', this)">
+ <span class="sub-name">＋ その他を追加</span>
+ <span class="sub-detail">その他</span>
+ </div>
+ `;
+ }
+ }
+
+ function selectSubject(key, detail, color, element) {
+ selectedSubjectKey = key;
+ selectedSubjectDetail = detail;
+ selectedCustomColor = color;
+ 
+ renderSubjectGrid();
+
+ const customGroup = document.getElementById('customSubjectGroup');
+ if (key === 'その他' && detail === '' && currentMode === 'goal') {
+ customGroup.style.display = 'flex';
+ } else {
+ customGroup.style.display = 'none';
+ }
+ }
+
+ function startCreate(mode) {
+ if (mode === 'complete') {
+ const keys = Object.keys(worksData);
+ if (keys.length === 0) {
+ alert('登録されているワークがありません。まずは目標シールや現在シールを作成してください！');
+ return;
+ }
+ const canComplete = keys.some(k => {
+ const w = worksData[k];
+ return w.goalEndPage > 0 && w.currentProgPage >= w.goalEndPage;
+ });
+
+ if (!canComplete) {
+ alert('⚠️ まだどのワークも目標ページに達していません！現在シールで目標ページまで進んだページを入力してから完了シールを作成してください。');
+ return;
+ }
+ }
+
+ currentMode = mode;
+ showScreen('screenForm');
+
+ const titles = {
+ 'goal': '目標シール作成',
+ 'current': '現在シール作成',
+ 'complete': '完了シール作成'
+ };
+ document.getElementById('headerTitle').innerText = titles[mode];
+
+ selectedSubjectKey = '国語';
+ selectedSubjectDetail = '学習漢字ノート';
+ selectedCustomColor = '#ef4444';
+ renderSubjectGrid();
+
+ const dateGroup = document.getElementById('dateGroup');
+ const dateLabel = document.getElementById('dateLabel');
+ const dateInput = document.getElementById('targetDateInput');
+ const pageGroup = document.getElementById('pageInputGroup');
+ const pageLabel = document.getElementById('pageInputLabel');
+ const pageContainer = document.getElementById('pageInputContainer');
+ const keyboardArea = document.getElementById('calcKeyboardArea');
+
+ dateInput.value = getTodayString();
+
+ if (mode === 'goal') {
+ dateGroup.style.display = 'flex';
+ dateLabel.innerText = '期限日';
+ pageGroup.style.display = 'flex';
+ pageLabel.innerText = '目標ページ';
+ pageContainer.innerHTML = `
+ <span>P.</span>
+ <div id="displayStart" class="calc-display-input" style="flex:1;" onclick="setActiveInput('displayStart')"></div>
+ <span>〜 P.</span>
+ <div id="displayEnd" class="calc-display-input" style="flex:1;" onclick="setActiveInput('displayEnd')"></div>
+ `;
+ keyboardArea.style.display = 'grid';
+ setActiveInput('displayStart');
+ } else if (mode === 'current') {
+ dateGroup.style.display = 'none';
+ pageGroup.style.display = 'flex';
+ pageLabel.innerText = '進んだページ';
+ pageContainer.innerHTML = `
+ <div id="displayEnd" class="calc-display-input" style="flex:1;" onclick="setActiveInput('displayEnd')"></div>
+ <span>ページまで</span>
+ `;
+ keyboardArea.style.display = 'grid';
+ setActiveInput('displayEnd');
+ } else if (mode === 'complete') {
+ dateGroup.style.display = 'none';
+ pageGroup.style.display = 'none';
+ keyboardArea.style.display = 'none';
+ }
+
+ document.getElementById('customSubjectInput').value = '';
+ }
+
+ function setActiveInput(id) {
+ activeInputId = id;
+ document.querySelectorAll('.calc-display-input').forEach(el => el.classList.remove('active'));
+ const target = document.getElementById(id);
+ if(target) target.classList.add('active');
+ }
+
+ function pressKey(val) {
+ if (!activeInputId) return;
+ const target = document.getElementById(activeInputId);
+ if (!target) return;
+
+ let currentVal = target.innerText;
+
+ if (val === 'C') {
+ target.innerText = '';
+ } else if (val === 'DEL') {
+ target.innerText = currentVal.slice(0, -1);
+ } else {
+ if (currentVal.length < 5) {
+ target.innerText = currentVal + val;
+ }
+ }
+ }
+
+ function getFullSubjectName() {
+ if (selectedSubjectKey === 'その他' && selectedSubjectDetail === '') {
+ const custom = document.getElementById('customSubjectInput').value.trim();
+ const color = document.getElementById('customColorInput').value;
+ if (custom) {
+ if (!customSubjects.some(s => s.name === custom)) {
+ customSubjects.push({ name: custom, color: color });
+ localStorage.setItem('study_custom_subjects', JSON.stringify(customSubjects));
+ }
+ selectedCustomColor = color;
+ return `${custom}`;
+ }
+ return 'その他';
+ } else if (selectedSubjectKey === 'その他') {
+ return `${selectedSubjectDetail}`;
+ }
+ return `${selectedSubjectKey}:${selectedSubjectDetail}`;
+ }
+
+ function backToForm() {
+ showScreen('screenForm');
+ }
+
+ let generatedDataUrl = '';
+
+ function generateSeal() {
+ const fullSubject = getFullSubjectName();
+ const mainColor = selectedCustomColor;
+
+ const todayStr = getTodayString();
+ const displayToday = formatDisplayDate(todayStr);
+ const targetDateVal = document.getElementById('targetDateInput').value;
+ const displayTarget = formatDisplayDate(targetDateVal);
+
+ let pageText = '';
+ let goalStartPage = 0;
+ let goalEndPage = 0;
+ let currentProgressPage = 0;
+
+ if (currentMode === 'goal') {
+ const startEl = document.getElementById('displayStart');
+ const endEl = document.getElementById('displayEnd');
+ const start = startEl ? parseInt(startEl.innerText.trim()) || 0 : 0;
+ const end = endEl ? parseInt(endEl.innerText.trim()) || 0 : 0;
+ if (start && end) {
+ pageText = `P.${start}〜P.${end}`;
+ goalStartPage = start;
+ goalEndPage = end;
+ } else if (end) {
+ pageText = `〜P.${end}`;
+ goalEndPage = end;
+ } else {
+ pageText = '未設定';
+ }
+ } else if (currentMode === 'current') {
+ const endEl = document.getElementById('displayEnd');
+ const end = endEl ? endEl.innerText.trim() : '';
+ currentProgressPage = end ? parseInt(end) || 0 : 0;
+ pageText = end ? `${end}ページまで` : '未入力';
+ }
+
+ if (currentMode === 'complete') {
+ const targetWork = worksData[fullSubject];
+ if (!targetWork || targetWork.currentProgPage < targetWork.goalEndPage) {
+ alert(`⚠️ 「${fullSubject}」はまだ目標ページ（P.${targetWork ? targetWork.goalEndPage : '未設定'}）に達していません！`);
+ showScreen('screenMenu');
+ return;
+ }
+ }
+
+ const canvas = document.getElementById('sealCanvas');
+ const ctx = canvas.getContext('2d');
+ 
+ // 印刷用の解像度を2倍（1200x600）にして文字をくっきり大きくする
+ canvas.width = 1200;
+ canvas.height = 600;
+
+ ctx.fillStyle = '#ffffff';
+ ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+ ctx.strokeStyle = mainColor;
+ ctx.lineWidth = 8;
+ ctx.strokeRect(24, 24, canvas.width - 48, canvas.height - 48);
+
+ ctx.fillStyle = mainColor;
+ ctx.fillRect(24, 24, 32, canvas.height - 48);
+
+ let subName = fullSubject;
+ let subDetail = '';
+ if (fullSubject.includes(':')) {
+ const parts = fullSubject.split(':');
+ subName = parts[0];
+ subDetail = parts[1];
+ }
+
+ if (currentMode === 'complete') {
+ playSound('complete');
+ ctx.fillStyle = '#1e293b';
+ ctx.font = 'bold 68px sans-serif';
+ ctx.fillText(subName, 96, 140);
+
+ ctx.fillStyle = '#64748b';
+ ctx.font = '48px sans-serif';
+ ctx.fillText(subDetail, 96, 220);
+ ctx.fillText(`完了日: ${displayToday}`, 96, 320);
+
+ ctx.save();
+ ctx.translate(960, 300);
+ ctx.beginPath();
+ ctx.arc(0, 0, 150, 0, Math.PI * 2);
+ ctx.fillStyle = '#ef4444';
+ ctx.fill();
+ ctx.lineWidth = 8;
+ ctx.strokeStyle = '#ffffff';
+ ctx.stroke();
+
+ ctx.fillStyle = '#ffffff';
+ ctx.font = 'bold 128px sans-serif';
+ ctx.textAlign = 'center';
+ ctx.textBaseline = 'middle';
+ ctx.fillText('完', 0, 8);
+ ctx.restore();
+
+ updateWorkData(fullSubject, mainColor, null, null, targetDateVal, { goalStart: 0, goalEnd: 0, currentProg: 0 }, true);
+
+ } else if (currentMode === 'goal') {
+ ctx.fillStyle = mainColor;
+ ctx.roundRect ? ctx.roundRect(96, 56, 220, 72, 12) : ctx.fillRect(96, 56, 220, 72);
+ ctx.fill();
+ ctx.fillStyle = '#ffffff';
+ ctx.font = 'bold 36px sans-serif';
+ ctx.fillText('🎯 目標', 136, 106);
+
+ ctx.fillStyle = '#1e293b';
+ ctx.font = 'bold 60px sans-serif';
+ ctx.fillText(subDetail ? `${subName} : ${subDetail}` : subName, 96, 210);
+
+ ctx.fillStyle = '#475569';
+ ctx.font = 'bold 56px sans-serif';
+ ctx.fillText(`目標: ${pageText}`, 96, 330);
+
+ ctx.fillStyle = '#ef4444';
+ ctx.font = 'bold 44px sans-serif';
+ ctx.fillText(`期限: ${displayTarget}`, 96, 430);
+
+ updateWorkData(fullSubject, mainColor, null, pageText, targetDateVal, { goalStart: goalStartPage, goalEnd: goalEndPage }, false);
+
+ } else if (currentMode === 'current') {
+ ctx.fillStyle = mainColor;
+ ctx.roundRect ? ctx.roundRect(96, 56, 220, 72, 12) : ctx.fillRect(96, 56, 220, 72);
+ ctx.fill();
+ ctx.fillStyle = '#ffffff';
+ ctx.font = 'bold 36px sans-serif';
+ ctx.fillText('📖 現在', 136, 106);
+
+ ctx.fillStyle = '#1e293b';
+ ctx.font = 'bold 60px sans-serif';
+ ctx.fillText(subDetail ? `${subName} : ${subDetail}` : subName, 96, 210);
+
+ ctx.fillStyle = mainColor;
+ ctx.font = 'bold 60px sans-serif';
+ ctx.fillText(`進捗: ${pageText}`, 96, 330);
+
+ ctx.fillStyle = '#64748b';
+ ctx.font = '40px sans-serif';
+ ctx.fillText(`記録日: ${displayToday}`, 96, 430);
+
+ updateWorkData(fullSubject, mainColor, pageText, null, null, { currentProg: currentProgressPage }, false);
+ }
+
+ generatedDataUrl = canvas.toDataURL('image/png');
+ showScreen('screenPreview');
+ }
+
+ function updateWorkData(fullSubject, color, currentVal, goalVal, dateVal, pageInfo, isComplete) {
+ if (!worksData[fullSubject]) {
+ worksData[fullSubject] = {
+ color: color,
+ current: '-',
+ goal: '-',
+ limitDate: '',
+ goalStartPage: 0,
+ goalEndPage: 0,
+ currentProgPage: 0,
+ status: '進行中'
+ };
+ }
+ worksData[fullSubject].color = color;
+ if (currentVal !== null) worksData[fullSubject].current = currentVal;
+ if (goalVal !== null) worksData[fullSubject].goal = goalVal;
+ if (dateVal) worksData[fullSubject].limitDate = dateVal;
+ 
+ if (pageInfo) {
+ if (pageInfo.goalStart !== undefined) {
+ worksData[fullSubject].goalStartPage = pageInfo.goalStart;
+ }
+ if (pageInfo.goalEnd !== undefined && pageInfo.goalEnd > 0) {
+ worksData[fullSubject].goalEndPage = pageInfo.goalEnd;
+ }
+ if (pageInfo.currentProg !== undefined && pageInfo.currentProg > 0) {
+ worksData[fullSubject].currentProgPage = pageInfo.currentProg;
+ }
+ }
+
+ // 残りページ数の計算（まだ現在シールを作っていない場合は、目標の終わりから初めを引いたページ数を初めの残りページ数とする）
+ const startP = worksData[fullSubject].goalStartPage > 0 ? worksData[fullSubject].goalStartPage : 0;
+ const endP = worksData[fullSubject].goalEndPage > 0 ? worksData[fullSubject].goalEndPage : 0;
+ const progP = worksData[fullSubject].currentProgPage > 0 ? worksData[fullSubject].currentProgPage : 0;
+
+ if (endP > 0) {
+ if (progP > 0) {
+ worksData[fullSubject].remainingPages = Math.max(0, endP - progP);
+ } else if (startP > 0) {
+ worksData[fullSubject].remainingPages = (endP - startP) + 1;
+ } else {
+ worksData[fullSubject].remainingPages = endP;
+ }
+ } else {
+ worksData[fullSubject].remainingPages = 0;
+ }
+
+ if (isComplete) {
+ worksData[fullSubject].status = '完了 🎉';
+ if (!['国語', '数学', '英語', '理科'].some(sub => fullSubject.startsWith(sub))) {
+ delete worksData[fullSubject];
+ customSubjects = customSubjects.filter(cs => cs.name !== fullSubject);
+ localStorage.setItem('study_custom_subjects', JSON.stringify(customSubjects));
+ }
+ } else {
+ worksData[fullSubject].status = '進行中';
+ }
+ localStorage.setItem('study_works_data', JSON.stringify(worksData));
+ }
+
+ function toggleDeleteMode() {
+ isDeleteMode = !isDeleteMode;
+ selectedForDelete.clear();
+ 
+ const btn = document.getElementById('trashToggleBtn');
+ const actionBar = document.getElementById('deleteActionBar');
+ 
+ if (isDeleteMode) {
+ btn.classList.add('active');
+ actionBar.classList.add('active');
+ } else {
+ btn.classList.remove('active');
+ actionBar.classList.remove('active');
+ }
+ renderWorkList();
+ }
+
+ function handleCardClick(fullSubject) {
+ if (!isDeleteMode) return;
+ 
+ if (selectedForDelete.has(fullSubject)) {
+ selectedForDelete.delete(fullSubject);
+ } else {
+ selectedForDelete.add(fullSubject);
+ }
+ renderWorkList();
+ }
+
+ function executeDeleteSelected() {
+ if (selectedForDelete.size === 0) {
+ alert('削除するワークが選択されていません。');
+ return;
+ }
+
+ if (confirm(`選択した ${selectedForDelete.size} 件のワークを削除しますか？`)) {
+ selectedForDelete.forEach(key => {
+ delete worksData[key];
+ customSubjects = customSubjects.filter(cs => cs.name !== key);
+ });
+ localStorage.setItem('study_works_data', JSON.stringify(worksData));
+ localStorage.setItem('study_custom_subjects', JSON.stringify(customSubjects));
+ toggleDeleteMode();
+ }
+ }
+
+ function renderCountdown() {
+ const banner = document.getElementById('countdownBanner');
+ const textEl = document.getElementById('countdownText');
+ 
+ if (!isBannerVisible) {
+ banner.style.display = 'none';
+ return;
+ }
+
+ const today = new Date();
+ today.setHours(0,0,0,0);
+
+ let nearestWork = null;
+ let minDays = Infinity;
+
+ Object.keys(worksData).forEach(key => {
+ const w = worksData[key];
+ if (w.limitDate && !w.status.includes('完了')) {
+ const limit = new Date(w.limitDate);
+ limit.setHours(0,0,0,0);
+ const diffTime = limit - today;
+ const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+ if (diffDays >= 0 && diffDays < minDays) {
+ minDays = diffDays;
+ nearestWork = { name: key, days: diffDays, remaining: w.remainingPages };
+ }
+ }
+ });
+
+ if (nearestWork) {
+ banner.style.display = 'flex';
+ textEl.innerText = `「${nearestWork.name}」 期限まであと ${nearestWork.days} 日 (残り約 ${nearestWork.remaining} ページ)`;
+ } else {
+ banner.style.display = 'none';
+ }
+ }
+
+ function changeCalendarMonth(direction) {
+ calendarMonth += direction;
+ if (calendarMonth > 11) {
+ calendarMonth = 0;
+ calendarYear++;
+ } else if (calendarMonth < 0) {
+ calendarMonth = 11;
+ calendarYear--;
+ }
+ renderCalendar();
+ }
+
+ function onCalendarDateClick(year, month, date) {
+ playSound('click');
+ const targetStr = `${year}-${String(month).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+ 
+ const matchedWorks = [];
+ Object.keys(worksData).forEach(key => {
+ const w = worksData[key];
+ if (w.limitDate === targetStr) {
+ matchedWorks.push(`・${key} [${w.status}] (残り約 ${w.remainingPages}ページ)`);
+ }
+ });
+
+ if (matchedWorks.length > 0) {
+ alert(`📅 ${month}月${date}日のワーク:\n\n` + matchedWorks.join('\n'));
+ } else {
+ alert(`📅 ${month}月${date}日の提出物はありません！`);
+ }
+ }
+
+ function renderCalendar() {
+ const calEl = document.getElementById('miniCalendar');
+
+ const firstDay = new Date(calendarYear, calendarMonth, 1).getDay();
+ const lastDate = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+
+ let html = `
+ <div class="cal-header">
+ <button class="cal-nav-btn" onclick="playSound('click'); changeCalendarMonth(-1)">＜</button>
+ <span>${calendarYear}年 ${calendarMonth + 1}月</span>
+ <button class="cal-nav-btn" onclick="playSound('click'); changeCalendarMonth(1)">＞</button>
+ </div>
+ <div class="cal-grid">
+ <div class="cal-day-name" style="color:#ef4444;">日</div>
+ <div class="cal-day-name">月</div>
+ <div class="cal-day-name">火</div>
+ <div class="cal-day-name">水</div>
+ <div class="cal-day-name">木</div>
+ <div class="cal-day-name">金</div>
+ <div class="cal-day-name" style="color:#0ea5e9;">土</div>
+ `;
+     const limitMap = {};
+ Object.keys(worksData).forEach(key => {
+ const w = worksData[key];
+ if (w.limitDate) {
+ const parts = w.limitDate.split('-');
+ if (parseInt(parts[0]) === calendarYear && parseInt(parts[1]) === (calendarMonth + 1)) {
+ limitMap[parseInt(parts[2])] = true;
+ }
+ }
+ });
+
+ const todayObj = new Date();
+ const isCurrentMonthYear = (todayObj.getFullYear() === calendarYear && todayObj.getMonth() === calendarMonth);
+ const todayDate = todayObj.getDate();
+
+ for (let i = 0; i < firstDay; i++) {
+ html += `<div></div>`;
+ }
+
+ for (let d = 1; d <= lastDate; d++) {
+ const isToday = (isCurrentMonthYear && d === todayDate);
+ const hasLimit = limitMap[d];
+ let cls = 'cal-date';
+ if (isToday) cls += ' today';
+ if (hasLimit) cls += ' has-limit';
+
+ html += `<div class="${cls}" onclick="onCalendarDateClick(${calendarYear}, ${calendarMonth + 1}, ${d})">${d}</div>`;
+ }
+
+ html += `</div>`;
+ calEl.innerHTML = html;
+ }
+
+ function renderWorkList() {
+ const container = document.getElementById('workListContainer');
+ container.innerHTML = '';
+
+ const keys = Object.keys(worksData);
+ if (keys.length === 0) {
+ container.innerHTML = `<div class="empty-state">まだ登録されているワークはありません。<br>シールを作成すると自動でここに追加されます！</div>`;
+ return;
+ }
+
+ keys.forEach(fullSubject => {
+ const data = worksData[fullSubject];
+ const borderColor = data.color || '#6366f1';
+ const isCompleted = data.status.includes('完了');
+ const badgeClass = isCompleted ? 'badge status-complete' : 'badge status-progress';
+ const isSelected = selectedForDelete.has(fullSubject);
+ const displayLimit = data.limitDate ? `期限: ${formatDisplayDate(data.limitDate)}` : '';
+ const displayRemain = data.remainingPages !== undefined ? `残り約 ${data.remainingPages}ページ` : '';
+
+ const card = document.createElement('div');
+ card.className = `work-card ${isDeleteMode ? 'selectable' : ''}`;
+ card.style.borderLeftColor = borderColor;
+ if (isSelected) {
+ card.style.background = '#fee2e2';
+ }
+
+ card.onclick = () => handleCardClick(fullSubject);
+
+ card.innerHTML = `
+ <div class="work-header-row">
+ <div class="work-title-area">
+ ${isDeleteMode ? `<input type="checkbox" ${isSelected ? 'checked' : ''} style="transform: scale(1.2); pointer-events: none;">` : ''}
+ <span class="work-card-title">${fullSubject}</span>
+ </div>
+ <span class="${badgeClass}">${data.status}</span>
+ </div>
+ <div class="work-card-info">
+ <span>進捗: <strong>${data.current}</strong></span>
+ <span>目標: <strong>${data.goal}</strong></span>
+ </div>
+ <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between;">
+ <span>${displayLimit}</span>
+ <span style="color: #ef4444; font-weight: bold;">${displayRemain}</span>
+ </div>
+ `;
+ container.appendChild(card);
+ });
+ }
+
+ async function printSeal() {
+ if (!generatedDataUrl) return;
+
+ const res = await fetch(generatedDataUrl);
+ const blob = await res.blob();
+ const file = new File([blob], "study_seal.png", { type: "image/png" });
+
+ if (navigator.canShare && navigator.canShare({ files: [file] })) {
+ try {
+ await navigator.share({
+ title: '提出物シール',
+ text: 'シールプリンター用に作成したシール画像です。',
+ files: [file],
+ });
+ return;
+ } catch (err) {
+ if (err.name !== 'AbortError') {
+ console.log('共有キャンセル', err);
+ }
+ }
+ }
+
+ const a = document.createElement('a');
+ a.href = generatedDataUrl;
+ a.download = 'study_seal.png';
+ document.body.appendChild(a);
+ a.click();
+ document.body.removeChild(a);
+ alert('シール画像をダウンロードしました！プリンターアプリから印刷してください。');
+ }
+
+ document.addEventListener('DOMContentLoaded', () => {
+ const titleEl = document.getElementById('workListHeaderTitle');
+ let lastTap = 0;
+ titleEl.addEventListener('touchend', (e) => {
+ const currentTime = new Date().getTime();
+ const tapLength = currentTime - lastTap;
+ if (tapLength < 300 && tapLength > 0) {
+ playSound('click');
+ isBannerVisible = !isBannerVisible;
+ renderCountdown();
+ e.preventDefault();
+ }
+ lastTap = currentTime;
+ });
+
+ titleEl.addEventListener('dblclick', () => {
+ playSound('click');
+ isBannerVisible = !isBannerVisible;
+ renderCountdown();
+ });
+ });
+
+ goToMenu();
 </script>
 
 </body>
-</html> 
+</html>
