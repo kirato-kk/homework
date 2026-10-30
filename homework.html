@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>提出物計画シール作成</title>
+ <title>提出物シール作成</title>
  <style>
  :root {
  --primary: #6366f1;
@@ -666,9 +666,10 @@
  let calendarMonth = new Date().getMonth();
  let isBannerVisible = JSON.parse(localStorage.getItem('study_banner_visible')) !== false;
 
- let isFreeInput = false; // 記入式（自由入力）モードフラグ
- let isMidway = false;    // 途中のモードフラグ
+ let isFreeInput = false;
+ let isMidway = false;
 
+ // 起動時に期限切れのワークを自動削除（ただし「完了」したものは消さずに残すように修正）
  function checkAndCleanExpiredWorks() {
  const today = new Date();
  today.setHours(0, 0, 0, 0);
@@ -676,7 +677,7 @@
  let updated = false;
  Object.keys(worksData).forEach(key => {
  const w = worksData[key];
- if (w.limitDate) {
+ if (w.limitDate && !w.status.includes('完了')) {
  const limit = new Date(w.limitDate);
  limit.setHours(0, 0, 0, 0);
  if (limit < today) {
@@ -852,7 +853,6 @@
  document.getElementById('customSubjectInput').value = '';
  }
 
- // 目標入力UIの描画
  function renderPageInputsGoal() {
  const pageContainer = document.getElementById('pageInputContainer');
  const keyboardArea = document.getElementById('calcKeyboardArea');
@@ -876,7 +876,6 @@
  }
  }
 
- // 進捗入力UIの描画
  function renderPageInputsCurrent() {
  const pageContainer = document.getElementById('pageInputContainer');
  const keyboardArea = document.getElementById('calcKeyboardArea');
@@ -1127,7 +1126,7 @@
  ctx.font = '40px sans-serif';
  ctx.fillText(`記録日: ${displayToday}`, 96, 430);
 
- updateWorkData(fullSubject, mainColor, pageText, null, null, { currentProg: currentProgressPage }, false, isFreeInputSeal);
+ updateWorkData(mainColor, pageText, null, null, { currentProg: currentProgressPage }, false, isFreeInputSeal);
  }
 
  generatedDataUrl = canvas.toDataURL('image/png');
@@ -1170,7 +1169,6 @@
  const endP = worksData[fullSubject].goalEndPage > 0 ? worksData[fullSubject].goalEndPage : 0;
  const progP = worksData[fullSubject].currentProgPage > 0 ? worksData[fullSubject].currentProgPage : 0;
 
- // 記入式（自由入力）の場合は残りページ計算を行わない（nullにする）
  if (worksData[fullSubject].isFreeInput) {
  worksData[fullSubject].remainingPages = null;
  } else if (endP > 0) {
@@ -1187,11 +1185,6 @@
 
  if (isComplete) {
  worksData[fullSubject].status = '完了 🎉';
- if (!['国語', '数学', '英語', '理科'].some(sub => fullSubject.startsWith(sub))) {
- delete worksData[fullSubject];
- customSubjects = customSubjects.filter(cs => cs.name !== fullSubject);
- localStorage.setItem('study_custom_subjects', JSON.stringify(customSubjects));
- }
  } else {
  worksData[fullSubject].status = '進行中';
  }
@@ -1275,7 +1268,8 @@
  }
  }
  });
-  if (nearestWorks.length > 0) {
+
+ if (nearestWorks.length > 0) {
  banner.style.display = 'flex';
  const first = nearestWorks[0];
  const extraCount = nearestWorks.length - 1;
