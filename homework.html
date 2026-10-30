@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>提出物シール作成</title>
+ <title>提出物計画シール作成</title>
  <style>
  :root {
  --primary: #6366f1;
@@ -216,6 +216,7 @@
  display: flex;
  align-items: center;
  gap: 8px;
+ flex-wrap: wrap;
  }
 
  .calc-display-input {
@@ -663,9 +664,10 @@
 
  let calendarYear = new Date().getFullYear();
  let calendarMonth = new Date().getMonth();
-
- // localStorageからバナーの表示状態を読み込む（デフォルトはtrue）
  let isBannerVisible = JSON.parse(localStorage.getItem('study_banner_visible')) !== false;
+
+ let isFreeInput = false; // 記入式（自由入力）モードフラグ
+ let isMidway = false;    // 途中のモードフラグ
 
  function checkAndCleanExpiredWorks() {
  const today = new Date();
@@ -793,16 +795,18 @@
  }
  const canComplete = keys.some(k => {
  const w = worksData[k];
- return w.goalEndPage > 0 && w.currentProgPage >= w.goalEndPage;
+ return w.isFreeInput || (w.goalEndPage > 0 && w.currentProgPage >= w.goalEndPage);
  });
 
  if (!canComplete) {
- alert('⚠️ まだどのワークも目標ページに達していません！現在シールで目標ページまで進んだページを入力してから完了シールを作成してください。');
+ alert('⚠️ まだどのワークも目標に達していません！現在シールを入力してから完了シールを作成してください。');
  return;
  }
  }
 
  currentMode = mode;
+ isFreeInput = false;
+ isMidway = false;
  showScreen('screenForm');
 
  const titles = {
@@ -822,7 +826,6 @@
  const dateInput = document.getElementById('targetDateInput');
  const pageGroup = document.getElementById('pageInputGroup');
  const pageLabel = document.getElementById('pageInputLabel');
- const pageContainer = document.getElementById('pageInputContainer');
  const keyboardArea = document.getElementById('calcKeyboardArea');
 
  dateInput.value = getTodayString();
@@ -831,25 +834,15 @@
  dateGroup.style.display = 'flex';
  dateLabel.innerText = '期限日';
  pageGroup.style.display = 'flex';
- pageLabel.innerText = '目標ページ';
- pageContainer.innerHTML = `
- <span>P.</span>
- <div id="displayStart" class="calc-display-input" style="flex:1;" onclick="setActiveInput('displayStart')"></div>
- <span>〜 P.</span>
- <div id="displayEnd" class="calc-display-input" style="flex:1;" onclick="setActiveInput('displayEnd')"></div>
- `;
+ pageLabel.innerText = '目標';
+ renderPageInputsGoal();
  keyboardArea.style.display = 'grid';
- setActiveInput('displayStart');
  } else if (mode === 'current') {
  dateGroup.style.display = 'none';
  pageGroup.style.display = 'flex';
- pageLabel.innerText = '進んだページ';
- pageContainer.innerHTML = `
- <div id="displayEnd" class="calc-display-input" style="flex:1;" onclick="setActiveInput('displayEnd')"></div>
- <span>ページまで</span>
- `;
+ pageLabel.innerText = '進捗';
+ renderPageInputsCurrent();
  keyboardArea.style.display = 'grid';
- setActiveInput('displayEnd');
  } else if (mode === 'complete') {
  dateGroup.style.display = 'none';
  pageGroup.style.display = 'none';
@@ -857,6 +850,75 @@
  }
 
  document.getElementById('customSubjectInput').value = '';
+ }
+
+ // 目標入力UIの描画
+ function renderPageInputsGoal() {
+ const pageContainer = document.getElementById('pageInputContainer');
+ const keyboardArea = document.getElementById('calcKeyboardArea');
+
+ if (isFreeInput) {
+ pageContainer.innerHTML = `
+ <input type="text" id="freeGoalInput" placeholder="例: プリント1〜5枚目, 3章まで" style="flex:1;">
+ <button type="button" class="action-btn secondary-btn" style="padding: 10px 14px; font-size: 0.85rem; white-space: nowrap;" onclick="toggleFreeInputMode()">数字(P.)に戻す</button>
+ `;
+ keyboardArea.style.display = 'none';
+ } else {
+ pageContainer.innerHTML = `
+ <span>P.</span>
+ <div id="displayStart" class="calc-display-input" style="flex:1;" onclick="setActiveInput('displayStart')"></div>
+ <span>〜 P.</span>
+ <div id="displayEnd" class="calc-display-input" style="flex:1;" onclick="setActiveInput('displayEnd')"></div>
+ <button type="button" class="action-btn secondary-btn" style="padding: 10px 14px; font-size: 0.85rem; white-space: nowrap;" onclick="toggleFreeInputMode()">📝 記入式にする</button>
+ `;
+ keyboardArea.style.display = 'grid';
+ setActiveInput('displayStart');
+ }
+ }
+
+ // 進捗入力UIの描画
+ function renderPageInputsCurrent() {
+ const pageContainer = document.getElementById('pageInputContainer');
+ const keyboardArea = document.getElementById('calcKeyboardArea');
+
+ if (isFreeInput) {
+ pageContainer.innerHTML = `
+ <input type="text" id="freeCurrentInput" placeholder="例: 3枚目の途中, チャプター2完了" style="flex:1;">
+ <button type="button" class="action-btn secondary-btn" style="padding: 10px 14px; font-size: 0.85rem; white-space: nowrap;" onclick="toggleFreeInputMode()">数字(P.)に戻す</button>
+ `;
+ keyboardArea.style.display = 'none';
+ } else if (isMidway) {
+ pageContainer.innerHTML = `
+ <div id="displayEnd" class="calc-display-input" style="flex:1;" onclick="setActiveInput('displayEnd')"></div>
+ <span>ページ途中</span>
+ <button type="button" class="action-btn" style="padding: 10px 12px; font-size: 0.8rem; white-space: nowrap; background: #10b981;" onclick="toggleMidwayMode()">通常に戻す</button>
+ <button type="button" class="action-btn secondary-btn" style="padding: 10px 12px; font-size: 0.8rem; white-space: nowrap;" onclick="toggleFreeInputMode()">📝 記入式</button>
+ `;
+ keyboardArea.style.display = 'grid';
+ setActiveInput('displayEnd');
+ } else {
+ pageContainer.innerHTML = `
+ <div id="displayEnd" class="calc-display-input" style="flex:1;" onclick="setActiveInput('displayEnd')"></div>
+ <span>ページまで</span>
+ <button type="button" class="action-btn secondary-btn" style="padding: 10px 12px; font-size: 0.8rem; white-space: nowrap;" onclick="toggleMidwayMode()">＋ 途中</button>
+ <button type="button" class="action-btn secondary-btn" style="padding: 10px 12px; font-size: 0.8rem; white-space: nowrap;" onclick="toggleFreeInputMode()">📝 記入式</button>
+ `;
+ keyboardArea.style.display = 'grid';
+ setActiveInput('displayEnd');
+ }
+ }
+
+ function toggleFreeInputMode() {
+ isFreeInput = !isFreeInput;
+ isMidway = false;
+ if (currentMode === 'goal') renderPageInputsGoal();
+ else if (currentMode === 'current') renderPageInputsCurrent();
+ }
+
+ function toggleMidwayMode() {
+ isMidway = !isMidway;
+ isFreeInput = false;
+ renderPageInputsCurrent();
  }
 
  function setActiveInput(id) {
@@ -922,8 +984,13 @@
  let goalStartPage = 0;
  let goalEndPage = 0;
  let currentProgressPage = 0;
+ let isFreeInputSeal = isFreeInput;
 
  if (currentMode === 'goal') {
+ if (isFreeInput) {
+ const freeVal = document.getElementById('freeGoalInput').value.trim();
+ pageText = freeVal || '未設定';
+ } else {
  const startEl = document.getElementById('displayStart');
  const endEl = document.getElementById('displayEnd');
  const start = startEl ? parseInt(startEl.innerText.trim()) || 0 : 0;
@@ -938,17 +1005,27 @@
  } else {
  pageText = '未設定';
  }
+ }
  } else if (currentMode === 'current') {
+ if (isFreeInput) {
+ const freeVal = document.getElementById('freeCurrentInput').value.trim();
+ pageText = freeVal || '未入力';
+ } else {
  const endEl = document.getElementById('displayEnd');
  const end = endEl ? endEl.innerText.trim() : '';
  currentProgressPage = end ? parseInt(end) || 0 : 0;
+ if (isMidway && end) {
+ pageText = `${end}ページ途中`;
+ } else {
  pageText = end ? `${end}ページまで` : '未入力';
+ }
+ }
  }
 
  if (currentMode === 'complete') {
  const targetWork = worksData[fullSubject];
- if (!targetWork || targetWork.currentProgPage < targetWork.goalEndPage) {
- alert(`⚠️ 「${fullSubject}」はまだ目標ページ（P.${targetWork ? targetWork.goalEndPage : '未設定'}）に達していません！`);
+ if (!targetWork) {
+ alert(`⚠️ 「${fullSubject}」が登録されていません！`);
  showScreen('screenMenu');
  return;
  }
@@ -1006,7 +1083,7 @@
  ctx.fillText('完', 0, 8);
  ctx.restore();
 
- updateWorkData(fullSubject, mainColor, null, null, targetDateVal, { goalStart: 0, goalEnd: 0, currentProg: 0 }, true);
+ updateWorkData(fullSubject, mainColor, null, null, targetDateVal, { goalStart: 0, goalEnd: 0, currentProg: 0 }, true, false);
 
  } else if (currentMode === 'goal') {
  ctx.fillStyle = mainColor;
@@ -1028,7 +1105,7 @@
  ctx.font = 'bold 44px sans-serif';
  ctx.fillText(`期限: ${displayTarget}`, 96, 430);
 
- updateWorkData(fullSubject, mainColor, null, pageText, targetDateVal, { goalStart: goalStartPage, goalEnd: goalEndPage }, false);
+ updateWorkData(fullSubject, mainColor, null, pageText, targetDateVal, { goalStart: goalStartPage, goalEnd: goalEndPage }, false, isFreeInputSeal);
 
  } else if (currentMode === 'current') {
  ctx.fillStyle = mainColor;
@@ -1050,14 +1127,14 @@
  ctx.font = '40px sans-serif';
  ctx.fillText(`記録日: ${displayToday}`, 96, 430);
 
- updateWorkData(fullSubject, mainColor, pageText, null, null, { currentProg: currentProgressPage }, false);
+ updateWorkData(fullSubject, mainColor, pageText, null, null, { currentProg: currentProgressPage }, false, isFreeInputSeal);
  }
 
  generatedDataUrl = canvas.toDataURL('image/png');
  showScreen('screenPreview');
  }
 
- function updateWorkData(fullSubject, color, currentVal, goalVal, dateVal, pageInfo, isComplete) {
+ function updateWorkData(fullSubject, color, currentVal, goalVal, dateVal, pageInfo, isComplete, isFreeInputSeal) {
  if (!worksData[fullSubject]) {
  worksData[fullSubject] = {
  color: color,
@@ -1067,6 +1144,7 @@
  goalStartPage: 0,
  goalEndPage: 0,
  currentProgPage: 0,
+ isFreeInput: false,
  status: '進行中'
  };
  }
@@ -1074,7 +1152,8 @@
  if (currentVal !== null) worksData[fullSubject].current = currentVal;
  if (goalVal !== null) worksData[fullSubject].goal = goalVal;
  if (dateVal) worksData[fullSubject].limitDate = dateVal;
- 
+ if (isFreeInputSeal !== undefined) worksData[fullSubject].isFreeInput = isFreeInputSeal;
+
  if (pageInfo) {
  if (pageInfo.goalStart !== undefined) {
  worksData[fullSubject].goalStartPage = pageInfo.goalStart;
@@ -1091,7 +1170,10 @@
  const endP = worksData[fullSubject].goalEndPage > 0 ? worksData[fullSubject].goalEndPage : 0;
  const progP = worksData[fullSubject].currentProgPage > 0 ? worksData[fullSubject].currentProgPage : 0;
 
- if (endP > 0) {
+ // 記入式（自由入力）の場合は残りページ計算を行わない（nullにする）
+ if (worksData[fullSubject].isFreeInput) {
+ worksData[fullSubject].remainingPages = null;
+ } else if (endP > 0) {
  if (progP > 0) {
  worksData[fullSubject].remainingPages = Math.max(0, endP - progP);
  } else if (startP > 0) {
@@ -1100,7 +1182,7 @@
  worksData[fullSubject].remainingPages = endP;
  }
  } else {
- worksData[fullSubject].remainingPages = 0;
+ worksData[fullSubject].remainingPages = null;
  }
 
  if (isComplete) {
@@ -1193,13 +1275,13 @@
  }
  }
  });
-
- if (nearestWorks.length > 0) {
+  if (nearestWorks.length > 0) {
  banner.style.display = 'flex';
  const first = nearestWorks[0];
  const extraCount = nearestWorks.length - 1;
  const extraText = extraCount > 0 ? ` 他${extraCount}件` : '';
- textEl.innerText = `「${first.name}」${extraText} 期限まであと ${minDays} 日 (残り約 ${first.remaining} ページ)`;
+ const remainText = (first.remaining !== null && first.remaining !== undefined) ? ` (残り約 ${first.remaining} ページ)` : '';
+ textEl.innerText = `「${first.name}」${extraText} 期限まであと ${minDays} 日${remainText}`;
  } else {
  banner.style.display = 'none';
  }
@@ -1225,7 +1307,8 @@
  Object.keys(worksData).forEach(key => {
  const w = worksData[key];
  if (w.limitDate === targetStr) {
- matchedWorks.push(`・${key} [${w.status}] (残り約 ${w.remainingPages}ページ)`);
+ const remainText = (w.remainingPages !== null && w.remainingPages !== undefined) ? ` (残り約 ${w.remainingPages}ページ)` : '';
+ matchedWorks.push(`・${key} [${w.status}]${remainText}`);
  }
  });
 
@@ -1308,7 +1391,7 @@
  const badgeClass = isCompleted ? 'badge status-complete' : 'badge status-progress';
  const isSelected = selectedForDelete.has(fullSubject);
  const displayLimit = data.limitDate ? `期限: ${formatDisplayDate(data.limitDate)}` : '';
- const displayRemain = data.remainingPages !== undefined ? `残り約 ${data.remainingPages}ページ` : '';
+ const displayRemain = (data.remainingPages !== null && data.remainingPages !== undefined) ? `残り約 ${data.remainingPages}ページ` : '';
 
  const card = document.createElement('div');
  card.className = `work-card ${isDeleteMode ? 'selectable' : ''}`;
@@ -1380,7 +1463,6 @@
  if (tapLength < 300 && tapLength > 0) {
  playSound('click');
  isBannerVisible = !isBannerVisible;
- // 非表示状態をlocalStorageに保存
  localStorage.setItem('study_banner_visible', JSON.stringify(isBannerVisible));
  renderCountdown();
  e.preventDefault();
@@ -1391,7 +1473,6 @@
  titleEl.addEventListener('dblclick', () => {
  playSound('click');
  isBannerVisible = !isBannerVisible;
- // 非表示状態をlocalStorageに保存
  localStorage.setItem('study_banner_visible', JSON.stringify(isBannerVisible));
  renderCountdown();
  });
